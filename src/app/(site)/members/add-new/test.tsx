@@ -2,7 +2,8 @@ import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { MemberForm } from "../_components/member-form";
 
-const Test = async () => {
+const Test = async ({username} : {username: string}) => {
+    console.log(username)
     const membershipPlans = await db.membershipPlan.findMany();
     const lockers = await db.locker.findMany({
       where: {
