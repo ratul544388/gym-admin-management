@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Member {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  memberId String  @unique
+  name     String
+  phone    String?
+  address  String?
+  gender   Gender?
+  due      Int?
+  imageUrl String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  membershipRecords MembershipRecord[]
+
+  locker Locker? @relation(fields: [lockerId], references: [id])
+  lockerId String? @unique @db.ObjectId
+  lockerRecords LockerRecord[]
+
+  membershipPlan   MembershipPlan @relation(fields: [membershipPlanId], references: [id])
+  membershipPlanId String         @db.ObjectId
+}
+
+model MembershipPlan {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  name            String @unique
+  durationInMonth Int    @unique
+  price           Int    @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  membershipRecords MembershipRecord[]
+  members           Member[]
+}
+
+model MembershipRecord {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  startDate DateTime
+  endDate   DateTime
+
+  cost Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  member   Member? @relation(fields: [memberId], references: [id])
+  memberId String? @db.ObjectId
+
+  membershipPlan   MembershipPlan? @relation(fields: [membershipPlanId], references: [id])
+  membershipPlanId String?         @db.ObjectId
+}
+
+model Locker {
+  id       String         @id @default(auto()) @map("_id") @db.ObjectId
+  lockerNo Int
+  price    Int
+  lockerRecords   LockerRecord[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  member Member?
+}
+
+model LockerRecord {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  locker   Locker? @relation(fields: [lockerId], references: [id])
+  lockerId String? @db.ObjectId
+  cost     Int
+
+  startDate DateTime
+  endDate   DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  member   Member? @relation(fields: [memberId], references: [id])
+  memberId String? @db.ObjectId
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
