@@ -1,7 +1,9 @@
 import { PageHeader } from "@/components/page-header";
 import { db } from "@/lib/db";
 import { columns } from "./columns";
-import { DataTable } from "./data-table";
+import { DataTable } from "./data-table"
+
+export const dynamic = "force-dynamic";
 
 const MembershipPlansPage = async () => {
   const membershipPlans = await db.membershipPlan.findMany({

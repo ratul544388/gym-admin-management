@@ -4,6 +4,7 @@ import { MemberForm } from "../_components/member-form";
 import { Separator } from "@/components/ui/separator";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
 
 const AddNewMemberPage = async () => {
   const membershipPlans = await db.membershipPlan.findMany();
