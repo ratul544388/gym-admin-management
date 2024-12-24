@@ -3,7 +3,8 @@ import { db } from "@/lib/db";
 import { MemberForm } from "../_components/member-form";
 import { Separator } from "@/components/ui/separator";
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
+
+export const dynamic = "force-dynamic";
 
 const AddNewMemberPage = async () => {
   const membershipPlans = await db.membershipPlan.findMany();
@@ -21,9 +22,7 @@ const AddNewMemberPage = async () => {
     <div className="space-y-3">
       <PageHeader label="Add a new Member" showBackButton />
       <Separator />
-      <Suspense fallback={"Loading..."}>
-        <MemberForm membershipPlans={membershipPlans} lockers={lockers} />
-      </Suspense>
+      <MemberForm membershipPlans={membershipPlans} lockers={lockers} />
     </div>
   );
 };
