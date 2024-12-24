@@ -3,6 +3,8 @@ import { PageHeader } from "@/components/page-header";
 import { db } from "@/lib/db";
 import { columns } from "./_components/columns";
 
+export const dynamic = "force-dynamic";
+
 const Page = async () => {
   const lockers = await db.locker.findMany({
     include: {
