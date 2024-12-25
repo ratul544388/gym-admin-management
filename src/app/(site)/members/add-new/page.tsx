@@ -8,14 +8,14 @@ const AddNewMemberPage = async () => {
   const membershipPlans = await db.membershipPlan.findMany();
   const lockers = await db.locker.findMany({
     where: {
-      member: null,
+      member: null
     },
   });
 
   if (!membershipPlans.length) {
     redirect("/membership-plans/new");
   }
-  
+
   return (
     <div className="space-y-3">
       <PageHeader label="Add a new Member" showBackButton />
