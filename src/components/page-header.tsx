@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { Button, buttonVariants } from "./ui/button";
 import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Button, buttonVariants } from "./ui/button";
 
 interface PageHeaderProps {
   showBackButton?: boolean;
@@ -20,7 +20,7 @@ export const PageHeader = ({
 }: PageHeaderProps) => {
   const router = useRouter();
   return (
-    <header className="flex items-center py-3 border-b border-dashed">
+    <div className="flex items-center py-3 border-b border-dashed">
       {showBackButton && (
         <Button
           onClick={() => router.back()}
@@ -40,6 +40,6 @@ export const PageHeader = ({
           {actionLabel}
         </Link>
       )}
-    </header>
+    </div>
   );
 };

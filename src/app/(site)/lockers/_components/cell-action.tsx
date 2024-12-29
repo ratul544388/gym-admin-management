@@ -3,7 +3,14 @@
 import { DropDownMenu } from "@/components/dropdown-menu";
 import { useModalStore } from "@/hooks/use-modal-store";
 import { DropdownMenuItemType, FullLockerType } from "@/types";
-import { CheckCircle, Edit, MoreVertical, Trash2, X } from "lucide-react";
+import {
+  Calendar,
+  CheckCircle,
+  Edit,
+  MoreVertical,
+  Trash2,
+  X,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface CellActionProps {
@@ -16,21 +23,27 @@ export const CellAction = ({ locker }: CellActionProps) => {
   const items: DropdownMenuItemType[] = [
     {
       icon: Edit,
-      label: "Renew Locker",
-      onClick: () => router.push(`/membership-plans/${locker.id}/edit`),
+      label: "Edit Locker",
+      onClick: () => router.push(`/lockers/${locker.id}/edit`),
     },
-    ...(locker.member
+    {
+      icon: Calendar,
+      label: "Renew Locker",
+      onClick: () => router.push(`/lockers/${locker.id}/edit`),
+    },
+    ...(!!locker.members.length
       ? [
           {
-            label: "Unassign Locker",
-            onClick: () => router.push(`/members/${""}`),
+            label: "Unassign Member",
+            onClick: () =>
+              onOpen("unassignLockerModal", { id: locker.members[0].id }),
             icon: X,
           },
         ]
       : [
           {
-            label: "Assign Locker",
-            onClick: () => router.push(`/members/${""}`),
+            label: "Assign Member",
+            onClick: () => router.push(`/lockers/${locker.id}/assign-member`),
             icon: CheckCircle,
           },
         ]),

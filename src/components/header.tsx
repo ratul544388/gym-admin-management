@@ -1,13 +1,25 @@
 "use client";
 
+import { Container } from "./container";
 import { Logo } from "./logo";
 import { MobileSidebar } from "./sidebars/mobile-sidebar";
+import { ThemeToggler } from "./theme-toggler";
+import { UserButton } from "./user-button";
 
 export const Header = () => {
   return (
-    <header className="border-b px-4 py-3 md:hidden flex items-center gap-3">
-      <MobileSidebar />
-      <Logo />
-    </header>
+    <Container
+      elem="header"
+      className="sticky top-0 z-50 flex h-[65px] items-center border-b bg-background"
+    >
+      <div className="flex items-center gap-3">
+        <MobileSidebar />
+        <Logo className="hidden md:block" />
+      </div>
+      <div className="ml-auto flex items-center gap-4">
+        <ThemeToggler />
+        <UserButton/> 
+      </div>
+    </Container>
   );
 };

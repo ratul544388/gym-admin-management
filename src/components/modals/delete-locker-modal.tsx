@@ -1,5 +1,5 @@
 import { useModalStore } from "@/hooks/use-modal-store";
-import { deleteLocker } from "@/server-actions/lockers";
+import { deleteLocker } from "@/actions/lockers";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";

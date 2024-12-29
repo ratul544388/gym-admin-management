@@ -1,14 +1,14 @@
 "use client";
 
 import { DropDownMenu } from "@/components/dropdown-menu";
-import { useQueryString } from "@/hooks/use-query-string";
-import { getMembershipPlans } from "@/server-actions/membership-plans";
+import { useQueryParams } from "@/hooks/use-query-params";
+import { getMembershipPlanNames } from "@/actions/membership-plans";
 import { DropdownMenuItemType, StatusType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 
 export const TableHeaderMembershipPlan = () => {
-  const { push } = useQueryString();
+  const setQueryParams = useQueryParams();
   const searchParams = useSearchParams();
   const activeMembershipPlan = searchParams.get(
     "membership_plan",
@@ -18,27 +18,24 @@ export const TableHeaderMembershipPlan = () => {
 
   const { data: membershipPlans } = useQuery({
     queryKey: ["membership-plans"],
-    queryFn: async () => await getMembershipPlans(),
+    queryFn: async () => await getMembershipPlanNames(),
   });
 
-  if (!membershipPlans) return;
 
   const items: DropdownMenuItemType[] = membershipPlans?.map(
-    ({ name, _count }) => {
+    ({ name }) => {
       return {
         label: name,
-        badge: _count.members,
         active: activeMembershipPlan === name.toLowerCase(),
         onClick: () => {
-          if (activeMembershipPlan === name.toLowerCase()) {
-            push({ membership_plan: "" });
-          } else {
-            push({ membership_plan: name });
-          }
+          setQueryParams({
+            query: { membership_plan: name.toLowerCase() },
+            toggleIfSame: true,
+          });
         },
       };
     },
-  );
+  ) || [];
 
   return (
     <DropDownMenu showArrow items={items}>

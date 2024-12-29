@@ -1,11 +1,40 @@
-import { DataTable } from "@/app/(site)/members/_components/data-table";
+import { DataTable } from "@/components/data-table";
 import { PageHeader } from "@/components/page-header";
-import { Pagination } from "@/components/pagination";
 import { db } from "@/lib/db";
 import { SearchParamsType, StatusType } from "@/types";
 import { Gender, Prisma } from "@prisma/client";
 import { columns } from "./_components/columns";
-import { Suspense } from "react";
+
+const getMembers = async ({
+  where,
+  skip,
+}: {
+  where: Prisma.MemberWhereInput;
+  skip: number;
+}) => {
+  const VIEW_PER_PAGE = 10;
+  const members = await db.member.findMany({
+    where,
+    include: {
+      membershipPlan: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    take: VIEW_PER_PAGE,
+    skip,
+  });
+
+  return members;
+};
+
+const getTotalMembers = async (where: Prisma.MemberWhereInput) => {
+  const totalMembers = await db.member.count({
+    where,
+  });
+  return totalMembers;
+};
 
 export default async function MembersPage({
   searchParams,
@@ -13,6 +42,7 @@ export default async function MembersPage({
   searchParams: SearchParamsType;
 }) {
   const page = Number((await searchParams).page) || 1;
+  const q = (await searchParams).q as string;
   const membershipPlan = (await searchParams).membership_plan as string;
   const gender = (
     (await searchParams).gender as string
@@ -38,6 +68,27 @@ export default async function MembersPage({
               }),
         }
       : {}),
+    ...(q
+      ? {
+          OR: [
+            {
+              memberId: q,
+            },
+            {
+              name: {
+                contains: q,
+                mode: "insensitive",
+              },
+            },
+            {
+              phone: {
+                contains: q,
+                mode: "insensitive",
+              },
+            },
+          ],
+        }
+      : {}),
     ...(membershipPlan
       ? {
           membershipPlan: {
@@ -50,66 +101,43 @@ export default async function MembersPage({
       : {}),
     ...(status === "PENDING"
       ? {
-          startDate: {
+          isMembershipPlanRenewed: false,
+          membershipPlanStartDate: {
             gt: new Date(),
           },
         }
       : status === "EXPIRED"
         ? {
-            endDate: {
+            membershipPlanEndDate: {
               lt: new Date(),
             },
           }
         : status === "ACTIVE"
           ? {
-              startDate: {
-                lt: new Date(),
-              },
-              endDate: {
+              membershipPlanEndDate: {
                 gt: new Date(),
               },
             }
           : {}),
   };
 
-  const totalMembers = await db.member.count({ where });
-  const totalPages = totalMembers / VIEW_PER_PAGE;
+  const [members, totalMembers] = await Promise.all([
+    getMembers({ where, skip }),
+    getTotalMembers(where),
+  ]);
 
-  const members = await db.member.findMany({
-    where,
-    include: {
-      membershipPlan: {
-        include: {
-          membershipRecords: {
-            orderBy: {
-              createdAt: "desc",
-            },
-            take: 2,
-          },
-        },
-      },
-      locker: {
-        include: {
-          lockerRecords: {
-            orderBy: {
-              createdAt: "desc",
-            },
-            take: 1,
-          },
-        },
-      },
-    },
-    take: VIEW_PER_PAGE,
-    skip,
-  });
+  const totalPages = Math.ceil(totalMembers / VIEW_PER_PAGE);
 
   return (
     <div>
       <PageHeader label="Members" actionUrl="/members/add-new" />
-      <Suspense fallback={"Loading...."}>
-        <DataTable columns={columns} data={members} />
-      </Suspense>
-      <Pagination maxPages={totalPages} className="mt-3" />
+      <DataTable
+        columns={columns}
+        data={members}
+        showSearchInput
+        deleteModalType="deleteMemberModal"
+        totalPage={totalPages}
+      />
     </div>
   );
 }

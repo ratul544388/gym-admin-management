@@ -1,30 +1,27 @@
+import { DataTable } from "@/components/data-table";
 import { PageHeader } from "@/components/page-header";
-import { getMembershipPlans } from "@/server-actions/membership-plans";
+import { db } from "@/lib/db";
 import { columns } from "./columns";
-import { DataTable } from "./data-table";
-import { Suspense } from "react";
 
 const MembershipPlansPage = async () => {
-  const membershipPlans = await getMembershipPlans();
-
-  const formattedMembershipPlans = membershipPlans.map(
-    ({ id, name, price, durationInMonth, _count }) => {
-      return {
-        id,
-        name,
-        durationInMonth,
-        price,
-        memberCount: _count.members,
-      };
+  const membershipPlans = await db.membershipPlan.findMany({
+    include: {
+      _count: {
+        select: {
+          members: true,
+        },
+      },
     },
-  );
+  });
 
   return (
     <div className="">
       <PageHeader label="Membership Plan" actionUrl="/membership-plans/new" />
-      <Suspense fallback={<div>Loading...</div>}>
-        <DataTable columns={columns} data={formattedMembershipPlans} />
-      </Suspense>
+      <DataTable
+        columns={columns}
+        data={membershipPlans}
+        deleteModalType="deleteMembershipPlanModal"
+      />
     </div>
   );
 };

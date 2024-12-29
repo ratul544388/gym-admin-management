@@ -18,16 +18,17 @@ import { membershipPlanSchema } from "@/schemas";
 import {
   createMembershipPlan,
   updateMembershipPlan,
-} from "@/server-actions/membership-plans";
+} from "@/actions/membership-plans";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { MembershipPlan } from "@prisma/client";
+import { FormCard } from "@/components/form-card";
 
 export const MembershipPlanForm = ({
   membershipPlan,
 }: {
-  membershipPlan?: MembershipPlan;
+  membershipPlan?: MembershipPlan | null;
 }) => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -44,15 +45,18 @@ export const MembershipPlanForm = ({
   function onSubmit(values: z.infer<typeof membershipPlanSchema>) {
     startTransition(() => {
       if (membershipPlan) {
-        updateMembershipPlan({ values, membershipPlanId: membershipPlan.id }).then(({error, success}) => {
-          if(success) {
+        updateMembershipPlan({
+          values,
+          membershipPlanId: membershipPlan.id,
+        }).then(({ error, success }) => {
+          if (success) {
             toast.success(success);
-            router.push('/membership-plans');
+            router.push("/membership-plans");
             router.refresh();
           } else {
-            toast.error(error)
+            toast.error(error);
           }
-        })
+        });
       } else {
         createMembershipPlan(values).then(({ success, error }) => {
           if (success) {
@@ -70,53 +74,65 @@ export const MembershipPlanForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="durationInMonth"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Duration in Month</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Duration In Month"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Price</FormLabel>
-              <FormControl>
-                <Input type="number" placeholder="Price" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" disabled={isPending}>
-          {membershipPlan ? "Update" : "Create"}
-        </Button>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <FormCard>
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input
+                    autoFocus={!!!membershipPlan}
+                    placeholder="Name"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="durationInMonth"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Duration in Month</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Duration In Month"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Price</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    placeholder="Price"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" disabled={isPending} className="ml-auto">
+            {membershipPlan ? "Update" : "Create"}
+          </Button>
+        </FormCard>
       </form>
     </Form>
   );

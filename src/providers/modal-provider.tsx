@@ -2,6 +2,7 @@
 import { DeleteLockerModal } from "@/components/modals/delete-locker-modal";
 import { DeleteMemberModal } from "@/components/modals/delete-member-modal";
 import { DeleteMembershipPlanModal } from "@/components/modals/delete-membership-plan-modal";
+import { UnassignLockerModal } from "@/components/modals/unassign-locker-modal";
 import { useEffect, useState } from "react";
 export const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -19,6 +20,7 @@ export const ModalProvider = () => {
       <DeleteMemberModal/>
       <DeleteMembershipPlanModal/>
       <DeleteLockerModal/>
+      <UnassignLockerModal/>
     </>
   );
 };

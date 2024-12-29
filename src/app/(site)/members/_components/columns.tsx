@@ -2,12 +2,16 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import UserAvatar from "@/components/user-avatar";
+import { placeholderImage } from "@/constants";
 import { capitalize, formatDate, getStatus } from "@/lib/utils";
 import { FullMemberType } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
 import { CellAction } from "./cell-action";
 import { StatusHeaderPopover } from "./status-header-popover";
 import { TableGenderHeader } from "./table-gender-header";
+import { TableHeaderMembershipPlan } from "./table-header-membership-plan";
 
 export const columns: ColumnDef<FullMemberType>[] = [
   {
@@ -41,6 +45,17 @@ export const columns: ColumnDef<FullMemberType>[] = [
   {
     accessorKey: "name",
     header: "Name",
+    cell: ({ row }) => {
+      const name = row.original.name;
+      const imageUrl = row.original.imageUrl || placeholderImage;
+      const href = `/members${row.original.id}/profile`;
+      return (
+        <Link href={href} className="group flex items-center gap-2 pr-6">
+          <UserAvatar avatarUrl={imageUrl} />
+          <p className="group-hover:underline">{name}</p>
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "phone",
@@ -71,7 +86,7 @@ export const columns: ColumnDef<FullMemberType>[] = [
   },
   {
     accessorKey: "MembershipPlan",
-    header: "Membership Plan",
+    header: () => <TableHeaderMembershipPlan />,
     cell: ({ row }) => {
       const membershipPlan = row.original.membershipPlan.name;
       return capitalize(membershipPlan);
@@ -81,15 +96,11 @@ export const columns: ColumnDef<FullMemberType>[] = [
     accessorKey: "status",
     header: () => <StatusHeaderPopover />,
     cell: ({ row }) => {
-      const lastMembershipPlanRecord =
-        row.original.membershipPlan.membershipRecords[
-          row.original.membershipPlan.membershipRecords.length - 1
-        ];
-
-      const startDate = lastMembershipPlanRecord.startDate;
-      const endDate = lastMembershipPlanRecord.endDate;
-      const hasRenewed =
-        row.original.membershipPlan.membershipRecords.length > 1;
+      const {
+        membershipPlanStartDate: startDate,
+        membershipPlanEndDate: endDate,
+        isMembershipPlanRenewed: hasRenewed,
+      } = row.original;
       const status = getStatus({ startDate, endDate, hasRenewed });
 
       return (
@@ -110,40 +121,37 @@ export const columns: ColumnDef<FullMemberType>[] = [
   {
     accessorKey: "startDate",
     header: "Start Date",
-    cell: ({ row }) => {
-      const lastMembershipPlanRecord =
-        row.original.membershipPlan.membershipRecords[
-          row.original.membershipPlan.membershipRecords.length - 1
-        ];
-      return formatDate({ date: lastMembershipPlanRecord.startDate });
-    },
+    cell: ({ row }) =>
+      formatDate({ date: row.original.membershipPlanStartDate }),
   },
   {
     accessorKey: "endDate",
     header: "Expire Date",
-    cell: ({ row }) => {
-      const lastMembershipPlanRecord =
-        row.original.membershipPlan.membershipRecords[
-          row.original.membershipPlan.membershipRecords.length - 1
-        ];
-      return formatDate({ date: lastMembershipPlanRecord.endDate });
-    },
+    cell: ({ row }) => formatDate({ date: row.original.membershipPlanEndDate }),
   },
   {
     accessorKey: "locker",
     header: "Locker",
     cell: ({ row }) => {
-      const startDate = row.original.locker?.lockerRecords[0]?.startDate;
-      const endDate = row.original.locker?.lockerRecords[0]?.endDate;
-      const hasRenewed =
-        !!row.original.locker?.lockerRecords?.length &&
-        row.original.locker.lockerRecords.length > 1;
+      const {
+        lockerStartDate: startDate,
+        lockerEndDate: endDate,
+        isLockerRenewed: hasRenewed,
+        lockerId,
+      } = row.original;
+
+      if (!lockerId) {
+        return <span className="text-muted-foreground">N/A</span>;
+      }
 
       if (startDate && endDate) {
-        const status = getStatus({ startDate, endDate, hasRenewed });
+        const status = getStatus({
+          startDate,
+          endDate,
+          hasRenewed,
+        });
         return capitalize(status);
       }
-      return <span className="text-muted-foreground">N/A</span>;
     },
   },
   {

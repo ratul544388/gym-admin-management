@@ -1,6 +1,7 @@
 "use client";
 
-import { useQueryString } from "@/hooks/use-query-string";
+import { useQueryParams } from "@/hooks/use-query-params";
+import { cn } from "@/lib/utils";
 import {
   ChevronLeft,
   ChevronRight,
@@ -10,7 +11,6 @@ import {
 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
 
 interface PaginationProps {
   maxPages: number;
@@ -19,7 +19,7 @@ interface PaginationProps {
 
 export const Pagination = ({ maxPages, className }: PaginationProps) => {
   const searchParams = useSearchParams();
-  const { push } = useQueryString();
+  const setQueryParams = useQueryParams();
   const currentPage = Number(searchParams.get("page")) || 1;
 
   let maxPageButtons = maxPages >= 5 ? 5 : maxPages || 1;
@@ -30,7 +30,7 @@ export const Pagination = ({ maxPages, className }: PaginationProps) => {
 
   const handleClick = (page: number) => {
     if (page === currentPage) return;
-    push({ page });
+    setQueryParams({ query: {page} });
   };
 
   const showJumpAheadButton = maxPages > 5 && maxPages > currentPage + 1;

@@ -1,5 +1,5 @@
 import { useModalStore } from "@/hooks/use-modal-store";
-import { deleteMembershipPlans } from "@/server-actions/membership-plans";
+import { deleteMembershipPlans } from "@/actions/membership-plans";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";

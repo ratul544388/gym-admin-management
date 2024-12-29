@@ -2,6 +2,7 @@ import React from "react";
 import { RenewForm } from "../../_components/renew-form";
 import { db } from "@/lib/db";
 import { ParamsType } from "@/types";
+import { PageHeader } from "@/components/page-header";
 
 const RenewMemberPage = async ({ params }: { params: ParamsType }) => {
   const membershipPlans = await db.membershipPlan.findMany();
@@ -10,24 +11,13 @@ const RenewMemberPage = async ({ params }: { params: ParamsType }) => {
   const member = await db.member.findUnique({
     where: {
       id,
-    },
-    include: {
-      membershipPlan: {
-        include: {
-          membershipRecords: {
-            orderBy: {
-              createdAt: "desc",
-            },
-            take: 1,
-          }
-        }
-      }
-    },
+    }
   });
 
   if (!member) return;
   return (
-    <div>
+    <div className="space-y-3">
+      <PageHeader label="Renew Member" showBackButton/>
       <RenewForm member={member} membershipPlans={membershipPlans} />
     </div>
   );

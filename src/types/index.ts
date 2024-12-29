@@ -1,9 +1,7 @@
 import {
   Locker,
-  LockerRecord,
   Member,
   MembershipPlan,
-  MembershipRecord,
 } from "@prisma/client";
 import { LucideIcon } from "lucide-react";
 
@@ -13,32 +11,18 @@ export type SearchParamsType = Promise<{
 
 export type ParamsType = Promise<{ id: string }>;
 
-export type MemberWithMembershipRecords = Member & {
-  membershipRecords: MembershipRecord[];
-};
+// export type MemberWithMembershipRecords = Member & {
+//   membershipRecords: MembershipRecord[];
+// };
 
 export type FullMemberType = Member & {
-  membershipPlan: MembershipPlan & {
-    membershipRecords: MembershipRecord[];
+  membershipPlan: {
+    name: string;
   };
-  locker:
-    | (Locker & {
-        lockerRecords: LockerRecord[];
-      })
-    | null;
-};
-
-export type FullMembershipPlanType = {
-  id: string;
-  name: string;
-  durationInMonth: number;
-  price: number;
-  memberCount: number;
 };
 
 export type FullLockerType = Locker & {
-  lockerRecords: LockerRecord[];
-  member: Member | null;
+  members: Member[]
 };
 
 export type StatusType = "ACTIVE" | "PENDING" | "EXPIRED" | "AVAILABLE";
@@ -53,7 +37,7 @@ export type DropdownMenuItemType = {
   destructive?: boolean;
 };
 
-export type membershipPlanWithMemberCount = MembershipPlan & {
+export type FullMembershipPlanType = MembershipPlan & {
   _count: {
     members: number;
   };

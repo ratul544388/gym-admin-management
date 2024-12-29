@@ -4,6 +4,16 @@ import { db } from "@/lib/db";
 import { membershipPlanSchema } from "@/schemas";
 import * as z from "zod";
 
+export const getMembershipPlanNames = async () => {
+  const membershipPlanNames = await db.membershipPlan.findMany({
+    select: {
+      name: true,
+    },
+  });
+
+  return membershipPlanNames;
+};
+
 export const getMembershipPlans = async () => {
   const membershipPlans = await db.membershipPlan.findMany({
     include: {
@@ -42,7 +52,7 @@ export const createMembershipPlan = async (
       },
     });
 
-    if(existingField) {
+    if (existingField) {
       return { error: "Membership Plan already exists" };
     }
 
@@ -82,7 +92,7 @@ export const updateMembershipPlan = async ({
       data: values,
     });
 
-    return { success: "Membership Plan created" };
+    return { success: "Membership Plan Updated" };
   } catch (error) {
     console.log(error);
     return { error: "Something went wrong" };

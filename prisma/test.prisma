@@ -1,0 +1,86 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+model Member {
+    id      String  @id @default(auto()) @map("_id") @db.ObjectId
+    name    String
+    phone   String?
+    address String?
+    age     Int?
+    gender  Gender?
+
+    membershipStartDate DateTime
+    membershipEndDate   DateTime
+
+    lockerStartDate DateTime?
+    lockerEndDate   DateTime?
+
+    costRecords CostRecord[]
+
+    createdAt DateTime @default(now())
+
+    membership   Membership @relation(fields: [membershipId], references: [id])
+    membershipId String     @db.ObjectId
+
+    locker   Locker? @relation(fields: [lockerId], references: [id])
+    lockerId String? @db.ObjectId
+}
+
+model CostRecord {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    cost Int
+
+    startDate DateTime
+    endDate   DateTime
+
+    type CostType
+
+    createdAt DateTime @default(now())
+
+    member   Member? @relation(fields: [memberId], references: [id], onDelete: NoAction)
+    memberId String? @db.ObjectId
+}
+
+model Membership {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    name            String @unique
+    durationInMonth Int    @unique
+    price           Int    @unique
+
+    members Member[]
+}
+
+model Locker {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    name  String @unique
+    price Int    @unique
+
+    members Member[]
+}
+
+model Expense {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    cost Int
+
+    createdAt DateTime @default(now())
+}
+
+enum Gender {
+    MALE
+    FEMALE
+}
+
+enum CostType {
+    MEMBERSHIP
+    LOCKER
+}

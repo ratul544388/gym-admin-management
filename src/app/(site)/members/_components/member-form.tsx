@@ -25,15 +25,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { capitalize, formatDate, getEndDate } from "@/lib/utils";
 import { memberSchema } from "@/schemas";
-import { createMember, updateMember } from "@/server-actions/members";
-import {
-  Gender,
-  Locker,
-  LockerRecord,
-  Member,
-  MembershipPlan,
-  MembershipRecord,
-} from "@prisma/client";
+import { createMember, updateMember } from "@/actions/members";
+import { Gender, Locker, Member, MembershipPlan } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -45,15 +38,14 @@ export const MemberForm = ({
   lockers,
 }: {
   membershipPlans?: MembershipPlan[];
-  member?: Member & {
-    membershipRecords: MembershipRecord[];
-    lockerRecords: LockerRecord[];
-  };
+  member?: Member;
   lockers: Locker[];
 }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [totalCost, setTotalCost] = useState<number | undefined>(undefined);
+  const [membershipPlanCost, setMembershipPlanCost] = useState<
+    number | undefined
+  >(undefined);
   const [lockerCost] = useState<number>(200);
   const form = useForm<z.infer<typeof memberSchema>>({
     resolver: zodResolver(memberSchema),
@@ -62,29 +54,26 @@ export const MemberForm = ({
       name: member?.name || "",
       phone: member?.phone || "",
       address: member?.address || "",
-      // image: undefined,
-      membershipPlanId: member?.membershipPlanId || "",
-      startDate: member?.membershipRecords[0].startDate || undefined,
       gender: member?.gender || undefined,
+      membershipPlanId: member?.membershipPlanId || "",
+      membershipPlanStartDate: member?.membershipPlanStartDate || undefined,
       lockerId: member?.lockerId || "",
-      lockerStartDate: member?.lockerRecords?.[0].startDate || undefined,
+      lockerStartDate: member?.lockerStartDate || undefined,
     },
   });
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof memberSchema>) {
     startTransition(() => {
-      if (!totalCost || !endDate) return;
+      if (!membershipPlanCost || !membershipPlanEndDate) return;
       if (member) {
         updateMember({
           id: member.id,
           values,
-          totalCost,
-          endDate,
-          lockerId: member.lockerId || "",
-          lockerCost: member.lockerRecords[0].cost || undefined,
-          lockerStartDate: member.lockerRecords[0].startDate || undefined,
-          lockerEndDate: member.lockerRecords[0].endDate || undefined,
+          membershipPlanCost,
+          membershipPlanEndDate,
+          lockerCost,
+          lockerEndDate,
         }).then(({ success, error }) => {
           if (success) {
             toast.success(success);
@@ -96,12 +85,10 @@ export const MemberForm = ({
       } else {
         createMember({
           values,
-          endDate,
-          totalCost,
+          membershipPlanCost,
+          membershipPlanEndDate,
           lockerCost,
-          lockerStartDate,
           lockerEndDate,
-          lockerId,
         }).then(({ success, error }) => {
           if (success) {
             toast.success(success);
@@ -111,10 +98,11 @@ export const MemberForm = ({
           }
         });
       }
+      router.refresh();
     });
   }
 
-  const startDate = form.getValues("startDate");
+  const membershipPlanStartDate = form.getValues("membershipPlanStartDate");
   const lockerStartDate = form.getValues("lockerStartDate");
   const membershipPlanId = form.getValues("membershipPlanId");
   const lockerId = form.getValues("lockerId");
@@ -126,17 +114,17 @@ export const MemberForm = ({
   useEffect(() => {
     if (!selectedMembershipPlan) return;
     const cost = selectedMembershipPlan.price + 500 + 200;
-    setTotalCost(cost);
+    setMembershipPlanCost(cost);
   }, [selectedMembershipPlan]);
 
-  const endDate = useMemo(() => {
-    if (startDate && selectedMembershipPlan) {
+  const membershipPlanEndDate = useMemo(() => {
+    if (membershipPlanStartDate && selectedMembershipPlan) {
       return getEndDate({
-        startDate,
+        startDate: membershipPlanStartDate,
         durationInMonth: selectedMembershipPlan.durationInMonth,
       });
     }
-  }, [selectedMembershipPlan, startDate]);
+  }, [membershipPlanStartDate, selectedMembershipPlan]);
 
   const lockerEndDate = useMemo(() => {
     if (lockerStartDate) {
@@ -265,7 +253,7 @@ export const MemberForm = ({
         <div>
           <FormField
             control={form.control}
-            name="startDate"
+            name="membershipPlanStartDate"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Start Date</FormLabel>
@@ -274,11 +262,12 @@ export const MemberForm = ({
                     value={field.value}
                     onChange={(value) => {
                       if (!membershipPlanId || !value) {
+                        console.log({ value, membershipPlanId });
                         return toast.error(
                           "Please Select a Membership Plan first",
                         );
                       }
-                      form.setValue("startDate", value, {
+                      form.setValue("membershipPlanStartDate", value, {
                         shouldValidate: true,
                       });
                     }}
@@ -288,9 +277,10 @@ export const MemberForm = ({
               </FormItem>
             )}
           />
-          {endDate && (
+          {membershipPlanEndDate && (
             <p className="text-sm font-medium text-blue-500">
-              The Membership will be expired on {formatDate({ date: endDate })}
+              The Membership will be expired on{" "}
+              {formatDate({ date: membershipPlanEndDate })}
             </p>
           )}
         </div>
@@ -382,10 +372,13 @@ export const MemberForm = ({
           )}
         </div>
         <div className="ml-auto flex items-center gap-3">
-          {totalCost && (
+          {membershipPlanCost && (
             <>
               <p className="font-semibold text-blue-500">Paying Amount</p>
-              <EditableAmount value={totalCost} onChange={setTotalCost} />
+              <EditableAmount
+                value={membershipPlanCost}
+                onChange={setMembershipPlanCost}
+              />
             </>
           )}
           <Button type="submit" disabled={isPending}>

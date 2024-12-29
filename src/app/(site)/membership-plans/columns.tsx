@@ -45,6 +45,7 @@ export const columns: ColumnDef<FullMembershipPlanType>[] = [
   {
     accessorKey: "memberCount",
     header: "Member Count",
+    cell: ({row}) => row.original._count.members
   },
   {
     accessorKey: "id",

@@ -44,12 +44,20 @@ export const columns: ColumnDef<FullLockerType>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const startDate = row.original.lockerRecords[0]?.startDate;
-      const endDate = row.original.lockerRecords[0]?.endDate;
-      if (!startDate || !endDate) {
+      const { members } = row.original;
+
+      if (!!!members.length) {
         return <Badge variant="green">Available</Badge>;
       }
-      const status = getStatus({ startDate, endDate, hasRenewed: false });
+
+      const startDate = row.original.members?.[0]?.lockerStartDate;
+      const endDate = row.original.members?.[0]?.lockerEndDate;
+      const hasRenewed = row.original.members?.[0]?.isLockerRenewed;
+
+      if (!startDate || !endDate) return;
+
+      const status = getStatus({ startDate, endDate, hasRenewed });
+
       return (
         <Badge
           variant={
@@ -69,7 +77,7 @@ export const columns: ColumnDef<FullLockerType>[] = [
     accessorKey: "startDate",
     header: "Start Date",
     cell: ({ row }) => {
-      const startDate = row.original.lockerRecords[0]?.startDate;
+      const startDate = row.original.members?.[0]?.lockerStartDate;
       return startDate ? (
         formatDate({ date: startDate })
       ) : (
@@ -81,7 +89,8 @@ export const columns: ColumnDef<FullLockerType>[] = [
     accessorKey: "endDate",
     header: "End Date Date",
     cell: ({ row }) => {
-      const endDate = row.original.lockerRecords[0]?.endDate;
+      const endDate = row.original.members?.[0]?.lockerEndDate;
+
       return endDate ? (
         formatDate({ date: endDate })
       ) : (

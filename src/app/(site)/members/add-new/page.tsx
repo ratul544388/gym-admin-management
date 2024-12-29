@@ -8,7 +8,9 @@ const AddNewMemberPage = async () => {
   const membershipPlans = await db.membershipPlan.findMany();
   const lockers = await db.locker.findMany({
     where: {
-      member: null
+      members: {
+        none: {},
+      },
     },
   });
 

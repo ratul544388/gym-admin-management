@@ -8,13 +8,12 @@ export const dynamic = "force-dynamic";
 const Page = async () => {
   const lockers = await db.locker.findMany({
     include: {
-      lockerRecords: {
-        orderBy: {
-          createdAt: "desc",
-        },
+      members: {
         take: 1,
+        orderBy: {
+          lockerStartDate: "desc",
+        },
       },
-      member: true,
     },
   });
 

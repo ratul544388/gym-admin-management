@@ -1,15 +1,22 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { asignLockerToMemberSchema, lockerSchema } from "@/schemas";
+import { assignLockerSchema, lockerSchema } from "@/schemas";
 import * as z from "zod";
 
-export const getLocker = async () => {
-  const lockers = await db.locker.findMany({});
+export const getAvailableLockers = async () => {
+  const lockers = await db.locker.findMany({
+    where: {
+      members: {
+        none: {},
+      },
+    },
+  });
   return lockers;
 };
 
 export const createLocker = async (values: z.infer<typeof lockerSchema>) => {
+  console.log(values);
   try {
     const validatedFields = lockerSchema.safeParse(values);
     if (!validatedFields.success) {
@@ -47,7 +54,7 @@ export const updateLocker = async ({
       data: values,
     });
 
-    return { success: "Membership Plan created" };
+    return { success: "Locker Updated" };
   } catch (error) {
     console.log(error);
     return { error: "Something went wrong" };
@@ -71,47 +78,59 @@ export const deleteLocker = async (ids: string[]) => {
   }
 };
 
-export const asignLockerToMember = async ({
+export const assignLocker = async ({
   values,
-  memberId,
   cost,
-  endDate,
+  endDate: lockerEndDate,
 }: {
-  values: z.infer<typeof asignLockerToMemberSchema>;
-  memberId: string;
+  values: z.infer<typeof assignLockerSchema>;
   cost: number;
   endDate: Date;
 }) => {
   try {
-    const validatedFields = asignLockerToMemberSchema.safeParse(values);
+    const validatedFields = assignLockerSchema.safeParse(values);
     if (!validatedFields.success) {
       return { error: "Invalid fields" };
     }
 
-    const { lockerId, startDate } = values;
+    const { memberId, startDate: lockerStartDate, lockerId } = values;
 
     await db.member.update({
       where: {
         id: memberId,
       },
       data: {
-        locker: {
-          connect: {
-            id: lockerId,
-          },
-        },
-        lockerRecords: {
+        lockerId,
+        lockerStartDate,
+        lockerEndDate,
+        costRecords: {
           create: {
-            lockerId,
-            startDate,
-            endDate,
             cost,
+            type: "LOCKER",
           },
         },
       },
     });
 
-    return { success: "Locker Assinged to the member" };
+    return { success: "Locker Assinged" };
+  } catch (error) {
+    console.log(error);
+    return { error: "Something went wrong" };
+  }
+};
+
+export const unassignLocker = async (memberId: string) => {
+  try {
+    await db.member.update({
+      where: {
+        id: memberId,
+      },
+      data: {
+        lockerId: null,
+      },
+    });
+
+    return { success: "Locker Unassigned" };
   } catch (error) {
     console.log(error);
     return { error: "Something went wrong" };

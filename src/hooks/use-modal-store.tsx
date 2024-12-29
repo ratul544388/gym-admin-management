@@ -6,8 +6,9 @@ export type ModalType =
   | "deleteMembershipPlanModal"
   | "deleteLockerModal"
   | "deleteExpenseModal"
-  | "assignLockerModal";
+  | "unassignLockerModal"
 interface ModalData {
+  id?: string;
   ids?: string[];
 }
 

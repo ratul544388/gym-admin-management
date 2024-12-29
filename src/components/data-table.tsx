@@ -18,19 +18,31 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useModalStore } from "@/hooks/use-modal-store";
+import useDebounce from "@/hooks/use-debounce";
+import { ModalType, useModalStore } from "@/hooks/use-modal-store";
+import { useQueryParams } from "@/hooks/use-query-params";
 import { Member } from "@prisma/client";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { Input } from "./ui/input";
+import { Pagination } from "./pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  showSearchInput?: boolean;
+  searchInputPlaceholder?: string;
+  deleteModalType?: ModalType;
+  totalPage?: number;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  showSearchInput,
+  searchInputPlaceholder = "Search here",
+  deleteModalType,
+  totalPage,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
   const [rowSelection, setRowSelection] = useState({});
@@ -48,28 +60,64 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchParams = useSearchParams();
+  const setQueryParams = useQueryParams();
+  const debouncedValue = useDebounce(searchQuery, 500);
   const { onOpen } = useModalStore();
   const showDeleteButton = table.getSelectedRowModel().rows.length > 0;
   const showEditButton = table.getSelectedRowModel().rows.length === 1;
 
+  const showResetButton =
+    !!table.getSelectedRowModel().rows.length || !!searchParams.size;
+
+  useEffect(() => {
+    if (debouncedValue === undefined) return;
+    if (debouncedValue === "") {
+      return setQueryParams({ query: { q: "" } });
+    }
+    setQueryParams({
+      query: {
+        q: debouncedValue,
+      },
+      clearCurrentQuery: true,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedValue]);
+
   return (
-    <div>
-      <div className="flex items-center gap-3 py-4">
-        {/* <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        /> */}
-        {showDeleteButton && (
+    <div className="mt-4 space-y-4">
+      <div className="flex items-center gap-3">
+        {showSearchInput && (
+          <Input
+            ref={searchInputRef}
+            type="text"
+            placeholder={searchInputPlaceholder}
+            value={searchQuery || ""}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="max-w-md"
+          />
+        )}
+        {showResetButton && (
+          <Button
+            variant="outline"
+            onClick={() => {
+              table.resetRowSelection();
+              setQueryParams({ query: {}, clearCurrentQuery: true });
+              setSearchQuery("");
+            }}
+          >
+            Reset Filters
+          </Button>
+        )}
+        {showDeleteButton && deleteModalType && (
           <Button
             onClick={() => {
               const selectedIds = table
                 .getSelectedRowModel()
                 .rows.map((row) => (row.original as Member).id);
-              onOpen("deleteMemberModal", { ids: selectedIds });
+              onOpen(deleteModalType, { ids: selectedIds });
             }}
             variant="destructive"
           >
@@ -139,6 +187,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+      {!!totalPage && totalPage > 10 && <Pagination maxPages={totalPage} />}
     </div>
   );
 }

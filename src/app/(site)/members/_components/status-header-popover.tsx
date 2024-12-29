@@ -6,7 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useQueryString } from "@/hooks/use-query-string";
+import { useQueryParams } from "@/hooks/use-query-params";
 import { capitalize, cn } from "@/lib/utils";
 import { StatusType } from "@/types";
 import { Check, ChevronDown } from "lucide-react";
@@ -15,7 +15,7 @@ import { useState } from "react";
 
 export const StatusHeaderPopover = () => {
   const [open, setOpen] = useState(false);
-  const { push } = useQueryString();
+  const setQueryParams = useQueryParams();
   const searchParams = useSearchParams();
   const activeStatus = searchParams.get("status")?.toUpperCase() as StatusType;
   const statusItems: StatusType[] = ["ACTIVE", "PENDING", "EXPIRED"];
@@ -32,11 +32,10 @@ export const StatusHeaderPopover = () => {
         {statusItems.map((item) => (
           <Button
             onClick={() => {
-              if (activeStatus === item) {
-                push({ status: "" });
-              } else {
-                push({ status: item });
-              }
+              setQueryParams({
+                query: { status: item.toLowerCase() },
+                toggleIfSame: true,
+              });
               setOpen(false);
             }}
             key={item}

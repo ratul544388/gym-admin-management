@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { renewMember } from "@/server-actions/members";
+import { renewMembershipPlan } from "@/actions/members";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -29,17 +29,14 @@ import {
 } from "@/components/ui/select";
 import { formatDate, getEndDate } from "@/lib/utils";
 import { renewMemberSchema } from "@/schemas";
-import { Member, MembershipPlan, MembershipRecord } from "@prisma/client";
+import { Member, MembershipPlan } from "@prisma/client";
+import { FormCard } from "@/components/form-card";
 
 export const RenewForm = ({
   member,
   membershipPlans,
 }: {
-  member: Member & {
-    membershipPlan: MembershipPlan & {
-      membershipRecords: MembershipRecord[]
-    }
-  };
+  member: Member;
   membershipPlans: MembershipPlan[];
 }) => {
   const [isPending, startTransition] = useTransition();
@@ -51,7 +48,7 @@ export const RenewForm = ({
   const form = useForm<z.infer<typeof renewMemberSchema>>({
     resolver: zodResolver(renewMemberSchema),
     defaultValues: {
-      startDate: member.membershipPlan.membershipRecords[0].endDate,
+      startDate: member.membershipPlanEndDate,
       membershipPlanId: member.membershipPlanId,
     },
   });
@@ -60,13 +57,13 @@ export const RenewForm = ({
   const membershipPlanId = form.getValues("membershipPlanId");
 
   const membershipPlan = useMemo(() => {
-    setModifiedPayingAmount(undefined)
+    setModifiedPayingAmount(undefined);
     return membershipPlans.find(
       (plan) => plan.id === membershipPlanId,
     ) as MembershipPlan;
   }, [membershipPlans, membershipPlanId]);
 
-  const payingAmount = useMemo(() => {
+  const cost = useMemo(() => {
     if (modifiedPayingAmount) {
       return modifiedPayingAmount;
     }
@@ -82,9 +79,9 @@ export const RenewForm = ({
 
   function onSubmit(values: z.infer<typeof renewMemberSchema>) {
     startTransition(() => {
-      renewMember({
+      renewMembershipPlan({
         values,
-        payingAmount,
+        cost,
         endDate,
         id: member.id,
       }).then(({ success, error }) => {
@@ -104,63 +101,65 @@ export const RenewForm = ({
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-8"
       >
-        <div>
+        <FormCard>
+          <div>
+            <FormField
+              control={form.control}
+              name="startDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Start Date</FormLabel>
+                  <FormControl>
+                    <DatePicker {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <p className="text-sm font-medium text-blue-500">
+              The Membership will be expired on {formatDate({ date: endDate })}
+            </p>
+          </div>
           <FormField
             control={form.control}
-            name="startDate"
-            render={({ field }) => (
+            name="membershipPlanId"
+            render={({}) => (
               <FormItem>
-                <FormLabel>Start Date</FormLabel>
+                <FormLabel>Membership Plan</FormLabel>
                 <FormControl>
-                  <DatePicker {...field} />
+                  <Select
+                    defaultValue={membershipPlanId}
+                    onValueChange={(value) =>
+                      form.setValue("membershipPlanId", value, {
+                        shouldValidate: true,
+                      })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Membership Plan" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {membershipPlans?.map(({ name, id, durationInMonth }) => {
+                        const formattedName = `${name} - (${durationInMonth} ${durationInMonth > 1 ? "Months" : "Month"})`;
+                        return (
+                          <SelectItem value={id} key={id}>
+                            {formattedName}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <p className="text-sm font-medium text-blue-500">
-            The Membership will be expired on {formatDate({ date: endDate })}
-          </p>
-        </div>
-        <FormField
-          control={form.control}
-          name="membershipPlanId"
-          render={({}) => (
-            <FormItem>
-              <FormLabel>Membership Plan</FormLabel>
-              <FormControl>
-                <Select
-                  defaultValue={membershipPlanId}
-                  onValueChange={(value) =>
-                    form.setValue("membershipPlanId", value, {
-                      shouldValidate: true,
-                    })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Membership Plan" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {membershipPlans?.map(({ name, id, durationInMonth }) => {
-                      const formattedName = `${name} - (${durationInMonth} ${durationInMonth > 1 ? "Months" : "Month"})`;
-                      return (
-                        <SelectItem value={id} key={id}>
-                          {formattedName}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex items-center justify-end gap-4">
-          <Button disabled={isPending} type="submit">
-            Renew
-          </Button>
-        </div>
+          <div className="flex items-center justify-end gap-4">
+            <Button disabled={isPending} type="submit">
+              Renew
+            </Button>
+          </div>
+        </FormCard>
       </form>
     </Form>
   );

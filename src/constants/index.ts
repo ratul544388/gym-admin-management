@@ -32,3 +32,5 @@ export const sidebarItems = [
         href: "/settings",
     },
 ] as const;
+
+export const placeholderImage = "/placeholder.png";
