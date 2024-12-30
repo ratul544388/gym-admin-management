@@ -1,10 +1,9 @@
 "use server";
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { db } from "@/lib/db";
 import { userSchema } from "@/schemas";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
-import { signOut } from "next-auth/react";
 import { z } from "zod";
 
 export const getUserById = async (userId: string) => {
@@ -43,6 +42,12 @@ export const register = async (values: z.infer<typeof userSchema>) => {
         email,
         password: hashedPassword,
       },
+    });
+
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
     });
 
     return { success: "Register Successful" };

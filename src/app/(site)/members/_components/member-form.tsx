@@ -31,6 +31,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { EditableAmount } from "@/components/editable-amount";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export const MemberForm = ({
   membershipPlans,
@@ -106,6 +108,7 @@ export const MemberForm = ({
   const lockerStartDate = form.getValues("lockerStartDate");
   const membershipPlanId = form.getValues("membershipPlanId");
   const lockerId = form.getValues("lockerId");
+  const [isCheckedLocker, setIsCheckedLocker] = useState(!!member?.lockerId);
 
   const selectedMembershipPlan = useMemo(() => {
     return membershipPlans?.find((plan) => plan.id === membershipPlanId);
@@ -261,7 +264,7 @@ export const MemberForm = ({
                   <DatePicker
                     value={field.value}
                     onChange={(value) => {
-                      if (!membershipPlanId || !value) {
+                      if (!membershipPlanId) {
                         console.log({ value, membershipPlanId });
                         return toast.error(
                           "Please Select a Membership Plan first",
@@ -304,73 +307,97 @@ export const MemberForm = ({
             </FormItem>
           )}
         /> */}
-        <FormField
-          control={form.control}
-          name="lockerId"
-          render={({}) => (
-            <FormItem>
-              <FormLabel>Locker No</FormLabel>
-              <FormControl>
-                <Select
-                  defaultValue={lockerId}
-                  onValueChange={(value) =>
-                    form.setValue("lockerId", value, {
-                      shouldValidate: true,
-                    })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a Locker" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {lockers?.map(({ lockerNo, id }) => {
-                      return (
-                        <SelectItem value={id} key={id}>
-                          {lockerNo}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div>
-          <FormField
-            control={form.control}
-            name="lockerStartDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Locker Start Date</FormLabel>
-                <FormControl>
-                  <DatePicker
-                    value={field.value}
-                    onChange={(value) => {
-                      if (!membershipPlanId || !lockerId || !value) {
-                        console.log({ membershipPlanId, lockerId, value });
-                        return toast.error(
-                          "Please Select a Membership Plan or Locker first",
-                        );
-                      }
-                      form.setValue("lockerStartDate", value, {
-                        shouldValidate: true,
-                      });
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+        <div className="flex items-center gap-3">
+          <Label className="cursor-pointer" htmlFor="lockerCheckbox">
+            {isCheckedLocker ? "Exclude Locker" : "Include Locker"}
+          </Label>
+          <Checkbox
+            onCheckedChange={() => {
+              setIsCheckedLocker(!isCheckedLocker);
+              form.setValue("lockerId", "");
+              form.setValue("lockerStartDate", undefined);
+            }}
+            id="lockerCheckbox"
+            checked={isCheckedLocker}
           />
-          {lockerEndDate && (
-            <p className="text-sm font-medium text-blue-500">
-              The Membership will be expired on{" "}
-              {formatDate({ date: lockerEndDate })}
-            </p>
-          )}
         </div>
+        {member?.lockerId && !isCheckedLocker && (
+          <p className="text-destructive text-sm">
+            The member is assigned with a locker. Excluding the locker will
+            unassigned the member from the locker.
+          </p>
+        )}
+        {isCheckedLocker && (
+          <>
+            <FormField
+              control={form.control}
+              name="lockerId"
+              render={({}) => (
+                <FormItem>
+                  <FormLabel>Locker No</FormLabel>
+                  <FormControl>
+                    <Select
+                      defaultValue={lockerId}
+                      onValueChange={(value) =>
+                        form.setValue("lockerId", value, {
+                          shouldValidate: true,
+                        })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a Locker" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {lockers?.map(({ lockerNo, id }) => {
+                          return (
+                            <SelectItem value={id} key={id}>
+                              {lockerNo}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div>
+              <FormField
+                control={form.control}
+                name="lockerStartDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Locker Start Date</FormLabel>
+                    <FormControl>
+                      <DatePicker
+                        value={field.value}
+                        onChange={(value) => {
+                          if (!membershipPlanId || !lockerId || !value) {
+                            console.log({ membershipPlanId, lockerId, value });
+                            return toast.error(
+                              "Please Select a Membership Plan or Locker first",
+                            );
+                          }
+                          form.setValue("lockerStartDate", value, {
+                            shouldValidate: true,
+                          });
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {lockerEndDate && (
+                <p className="text-sm font-medium text-blue-500">
+                  The Membership will be expired on{" "}
+                  {formatDate({ date: lockerEndDate })}
+                </p>
+              )}
+            </div>
+          </>
+        )}
         <div className="ml-auto flex items-center gap-3">
           {membershipPlanCost && (
             <>

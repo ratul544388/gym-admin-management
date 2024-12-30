@@ -4,14 +4,15 @@ import { Check, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 export function ThemeToggler() {
   const { theme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const themes = ["light", "dark", "system"];
+
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
