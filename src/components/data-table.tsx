@@ -87,7 +87,7 @@ export function DataTable<TData, TValue>({
   }, [debouncedValue]);
 
   return (
-    <div className="mt-4 space-y-4">
+    <div className="mt-4">
       <div className="flex items-center gap-3">
         {showSearchInput && (
           <Input
@@ -132,12 +132,13 @@ export function DataTable<TData, TValue>({
               ).id;
               router.push(`/membership-plans/edit/${id}`);
             }}
+            variant="default"
           >
             Edit
           </Button>
         )}
       </div>
-      <div className="rounded-md border">
+      <div className="mt-4 rounded-md border bg-background">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

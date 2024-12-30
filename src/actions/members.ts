@@ -2,24 +2,24 @@
 
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/get-current-user";
-import { memberSchema, renewMemberSchema } from "@/schemas";
+import { createMemberSchema, renewMemberSchema, updateMemberSchema } from "@/schemas";
 import * as z from "zod";
 
 export const createMember = async ({
   values,
   membershipPlanEndDate,
-  membershipPlanCost,
+  totalCost,
   lockerEndDate,
   lockerCost,
 }: {
-  values: z.infer<typeof memberSchema>;
+  values: z.infer<typeof createMemberSchema>;
   membershipPlanEndDate: Date;
-  membershipPlanCost: number;
+  totalCost: number;
   lockerEndDate?: Date;
   lockerCost?: number;
 }) => {
   try {
-    const validatedFields = memberSchema.safeParse(values);
+    const validatedFields = createMemberSchema.safeParse(values);
     if (!validatedFields.success) {
       return { error: "Invalid fields" };
     }
@@ -53,6 +53,8 @@ export const createMember = async ({
     if (existingMemberId) {
       return { error: "Member with same ID already exists" };
     }
+
+    const membershipPlanCost = totalCost - (lockerCost || 0);
 
     await db.member.create({
       data: {
@@ -98,37 +100,15 @@ export const createMember = async ({
 export const updateMember = async ({
   id,
   values,
-  membershipPlanEndDate,
-  membershipPlanCost,
-  lockerEndDate,
-  lockerCost,
 }: {
   id: string;
-  values: z.infer<typeof memberSchema>;
-  membershipPlanEndDate: Date;
-  membershipPlanCost: number;
-  lockerEndDate?: Date;
-  lockerCost?: number;
+  values: z.infer<typeof updateMemberSchema>;
 }) => {
   try {
-    const validatedFields = memberSchema.safeParse(values);
+    const validatedFields = updateMemberSchema.safeParse(values);
     if (!validatedFields.success) {
       return { error: "Invalid fields" };
     }
-
-    const {
-      membershipPlanId,
-      membershipPlanStartDate,
-      name,
-      address,
-      gender,
-      lockerStartDate,
-      phone,
-      memberId,
-      lockerId,
-      age,
-      imageUrl,
-    } = values;
 
     const currentUser = await getCurrentUser();
 
@@ -140,37 +120,7 @@ export const updateMember = async ({
       where: {
         id,
       },
-      data: {
-        memberId,
-        name,
-        address,
-        age,
-        gender,
-        phone,
-        membershipPlanStartDate,
-        membershipPlanId,
-        imageUrl,
-        membershipPlanEndDate,
-        lockerEndDate,
-        costRecords: {
-          create: {
-            cost: membershipPlanCost,
-            type: "MEMBERSHIP_PLAN",
-          },
-        },
-        ...(lockerId && lockerCost
-          ? {
-              lockerId,
-              lockerStartDate,
-              costRecords: {
-                create: {
-                  type: "LOCKER",
-                  cost: lockerCost,
-                },
-              },
-            }
-          : {}),
-      },
+      data: values,
     });
 
     return { success: "Member Updated" };

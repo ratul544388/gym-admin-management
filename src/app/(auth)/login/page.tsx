@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { userSchema } from "@/schemas";
+import { loginSchema } from "@/schemas";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -24,12 +24,13 @@ import { OrSeparator } from "../_components/or-separator";
 import { GoogleLoginButton } from "../_components/google-login-button";
 import { useRouter } from "next/navigation";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { PasswordInput } from "@/components/password-input";
 
 const LoginPage = () => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-  const form = useForm<z.infer<typeof userSchema>>({
-    resolver: zodResolver(userSchema),
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -37,11 +38,12 @@ const LoginPage = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof userSchema>) {
+  function onSubmit(values: z.infer<typeof loginSchema>) {
     startTransition(() => {
       login(values).then(({ success, error }) => {
         if (success) {
           router.push(DEFAULT_LOGIN_REDIRECT);
+          router.refresh();
         } else {
           toast.error(error);
         }
@@ -74,11 +76,7 @@ const LoginPage = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Enter Your Password"
-                    {...field}
-                  />
+                  <PasswordInput placeholder="Enter Your Password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

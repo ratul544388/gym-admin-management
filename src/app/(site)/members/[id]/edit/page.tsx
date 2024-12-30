@@ -1,8 +1,8 @@
-import { db } from "@/lib/db";
-import React from "react";
-import { MemberForm } from "../../_components/member-form";
-import { ParamsType } from "@/types";
 import { PageHeader } from "@/components/page-header";
+import { db } from "@/lib/db";
+import { ParamsType } from "@/types";
+import { UpdateMemberForm } from "../../_components/update-member-form";
+import { notFound } from "next/navigation";
 
 const EditMemberPage = async ({ params }: { params: ParamsType }) => {
   const id = (await params).id;
@@ -12,20 +12,14 @@ const EditMemberPage = async ({ params }: { params: ParamsType }) => {
     },
   });
 
-  const lockers = await db.locker.findMany();
-
-  const membershipPlans = await db.membershipPlan.findMany();
-
-  if (!member) return;
+  if (!member) {
+    return notFound();
+  }
 
   return (
     <div className="space-y-3">
       <PageHeader label="Edit Member" showBackButton />
-      <MemberForm
-        member={member}
-        membershipPlans={membershipPlans}
-        lockers={lockers}
-      />
+      <UpdateMemberForm member={member} />
     </div>
   );
 };

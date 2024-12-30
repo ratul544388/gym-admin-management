@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { Header } from "@/components/header";
 import { Toaster } from "@/components/ui/sonner";
 import { fontsClasses } from "@/fonts";
 import { ModalProvider } from "@/providers/modal-provider";
@@ -22,7 +23,7 @@ export default async function RootLayout({
   return (
     <SessionProvider session={session}>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${fontsClasses} antialiased`}>
+        <body className={`${fontsClasses} bg-background_2 antialiased`}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -32,6 +33,7 @@ export default async function RootLayout({
             <QueryProvider>
               <ModalProvider />
               <Toaster />
+              <Header />
               {children}
             </QueryProvider>
           </ThemeProvider>

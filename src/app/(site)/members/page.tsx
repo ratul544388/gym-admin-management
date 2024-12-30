@@ -130,7 +130,7 @@ export default async function MembersPage({
 
   return (
     <div>
-      <PageHeader label="Members" actionUrl="/members/add-new" />
+      <PageHeader label="Members" actionUrl="/members/new" />
       <DataTable
         columns={columns}
         data={members}

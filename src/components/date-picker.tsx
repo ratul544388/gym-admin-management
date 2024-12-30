@@ -21,6 +21,20 @@ interface DatePickerProps {
 
 export function DatePicker({ value, onChange }: DatePickerProps) {
   const [open, setOpen] = useState(false);
+
+  const handleSelect = (selectedDate: Date | undefined) => {
+    if (!selectedDate) {
+      return setOpen(false);
+    }
+    if (selectedDate) {
+      const date = new Date();
+      selectedDate.setHours(date.getHours());
+      selectedDate.setMinutes(date.getMinutes());
+    }
+    onChange(selectedDate);
+    setOpen(false);
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -38,10 +52,7 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
         <Calendar
           mode="single"
           selected={value}
-          onSelect={(value) => {
-            setOpen(false);
-            onChange(value);
-          }}
+          onSelect={handleSelect}
           initialFocus
         />
       </PopoverContent>

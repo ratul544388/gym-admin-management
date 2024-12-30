@@ -20,7 +20,7 @@ const Page = async () => {
   return (
     <div>
       <PageHeader label="Lockers" actionUrl="/lockers/new" />
-      <DataTable columns={columns} data={lockers} />
+      <DataTable columns={columns} data={lockers} showSearchInput searchInputPlaceholder="Search Locker By Locker No..."/>
     </div>
   );
 };

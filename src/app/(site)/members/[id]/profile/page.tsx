@@ -60,24 +60,25 @@ const MemberProfilePage = async ({ params }: { params: ParamsType }) => {
   return (
     <div className="space-y-3">
       <PageHeader label="Member's Profile" showBackButton />
-      <div className="rounded-lg border border-dashed p-5 shadow-md">
+      <div className="rounded-lg border border-dashed bg-background p-5 shadow-md">
         <div className="flex justify-between">
           <div className="relative size-48">
             <Image
               src={imageUrl || placeholderImage}
               alt="Avatar"
               fill
+              className="rounded-md object-cover"
             />
           </div>
           <Link
             href={`/members/${member.id}/edit`}
             className={buttonVariants({ variant: "outline" })}
           >
-            <Edit className="size-4"/>
+            <Edit className="size-4" />
             Edit
           </Link>
         </div>
-        <ul>
+        <ul className="mt-5">
           {Object.entries(data).map(([key, value]) => (
             <li
               key={key}

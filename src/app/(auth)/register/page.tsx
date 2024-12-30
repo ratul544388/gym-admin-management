@@ -16,28 +16,33 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { userSchema } from "@/schemas";
+import { registerSchema } from "@/schemas";
 import Link from "next/link";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { GoogleLoginButton } from "../_components/google-login-button";
 import { OrSeparator } from "../_components/or-separator";
+import { PasswordInput } from "@/components/password-input";
+import { useRouter } from "next/navigation";
 
 const RegisterPage = () => {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const form = useForm<z.infer<typeof userSchema>>({
-    resolver: zodResolver(userSchema),
+  const form = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof userSchema>) {
+  function onSubmit(values: z.infer<typeof registerSchema>) {
     startTransition(() => {
       register(values).then(({ success, error }) => {
         if (success) {
+          router.push("/");
           toast.success(success);
         } else {
           toast.error(error);
@@ -71,9 +76,21 @@ const RegisterPage = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Enter Your Password"
+                  <PasswordInput placeholder="Enter Your Password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <PasswordInput
+                    placeholder="Enter Confirm Password"
                     {...field}
                   />
                 </FormControl>
@@ -85,7 +102,7 @@ const RegisterPage = () => {
             Register
           </Button>
           <OrSeparator />
-          <GoogleLoginButton/>
+          <GoogleLoginButton />
           <div className="text-center">
             Already have an account?{" "}
             <Link href="/login" className="text-blue-500 underline">

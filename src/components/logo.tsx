@@ -4,9 +4,15 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-export const Logo = ({ className }: { className?: string }) => {
+export const Logo = ({
+  href = "/",
+  className,
+}: {
+  href?: string;
+  className?: string;
+}) => {
   return (
-    <Link href="/dashboard" className={cn(className)}>
+    <Link href={href} className={cn("block", className)}>
       <div className="flex items-center gap-2">
         <Image src="/logo.png" alt="logo" width={56} height={56} />
         <span

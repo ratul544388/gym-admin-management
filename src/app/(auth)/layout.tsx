@@ -19,7 +19,7 @@ export default async function AuthLayout({
   return (
     <Container
       elem="main"
-      className="flex h-screen items-center justify-center"
+      className="min-h-[calc(100vh_-_65px)] flex items-center justify-center"
     >
       {children}
     </Container>

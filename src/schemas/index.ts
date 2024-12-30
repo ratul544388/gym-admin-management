@@ -1,7 +1,7 @@
 import { Gender } from "@prisma/client";
 import { z } from "zod";
 
-export const memberSchema = z.object({
+export const createMemberSchema = z.object({
   memberId: z.string().min(1, "ID is required"),
   name: z.string().min(3, "Name is required"),
   phone: z.string().optional(),
@@ -42,7 +42,28 @@ export const expenseSchema = z.object({
   cost: z.coerce.number({ required_error: "Member Id. is required" }),
 });
 
-export const userSchema = z.object({
+export const loginSchema = z.object({
   email: z.string().min(3, "Email is required").email(),
   password: z.string().min(8, "Password is required"),
+});
+
+export const registerSchema = z
+  .object({
+    email: z.string().min(3, "Email is required").email(),
+    password: z.string().min(8, "Password is required"),
+    confirmPassword: z.string().min(8, "Password is required"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Password and Confirm Password do not match",
+  });
+
+export const updateMemberSchema = z.object({
+  memberId: z.string().min(1, "ID is required"),
+  name: z.string().min(3, "Name is required"),
+  phone: z.string().optional(),
+  age: z.coerce.number().optional(),
+  imageUrl: z.string().optional(),
+  address: z.string().optional(),
+  gender: z.nativeEnum(Gender).optional(),
 });

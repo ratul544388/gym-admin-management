@@ -127,6 +127,8 @@ export const unassignLocker = async (memberId: string) => {
       },
       data: {
         lockerId: null,
+        lockerStartDate: null,
+        lockerEndDate: null,
       },
     });
 

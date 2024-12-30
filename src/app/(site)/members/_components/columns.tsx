@@ -48,7 +48,7 @@ export const columns: ColumnDef<FullMemberType>[] = [
     cell: ({ row }) => {
       const name = row.original.name;
       const imageUrl = row.original.imageUrl || placeholderImage;
-      const href = `/members${row.original.id}/profile`;
+      const href = `/members/${row.original.id}/profile`;
       return (
         <Link href={href} className="group flex items-center gap-2 pr-6">
           <UserAvatar avatarUrl={imageUrl} />

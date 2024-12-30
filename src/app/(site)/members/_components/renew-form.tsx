@@ -31,6 +31,7 @@ import { formatDate, getEndDate } from "@/lib/utils";
 import { renewMemberSchema } from "@/schemas";
 import { Member, MembershipPlan } from "@prisma/client";
 import { FormCard } from "@/components/form-card";
+import { ModifiedCostPopover } from "@/components/modified-cost-popover";
 
 export const RenewForm = ({
   member,
@@ -43,6 +44,7 @@ export const RenewForm = ({
   const [modifiedPayingAmount, setModifiedPayingAmount] = useState<
     number | undefined
   >(undefined);
+
   const router = useRouter();
 
   const form = useForm<z.infer<typeof renewMemberSchema>>({
@@ -67,7 +69,7 @@ export const RenewForm = ({
     if (modifiedPayingAmount) {
       return modifiedPayingAmount;
     }
-    return membershipPlan.price + 500;
+    return membershipPlan.price;
   }, [membershipPlan.price, modifiedPayingAmount]);
 
   const endDate = useMemo(() => {
@@ -155,6 +157,16 @@ export const RenewForm = ({
             )}
           />
           <div className="flex items-center justify-end gap-4">
+            <div className="flex gap-3 font-semibold text-blue-500">
+              Paying Amount
+              <ModifiedCostPopover
+                title="Modify Paying Amount"
+                value={cost}
+                onChange={setModifiedPayingAmount}
+              >
+                {cost}/-
+              </ModifiedCostPopover>
+            </div>
             <Button disabled={isPending} type="submit">
               Renew
             </Button>

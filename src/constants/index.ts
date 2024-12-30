@@ -1,6 +1,6 @@
 import { Diamond, DollarSign, LayoutDashboard, Lock, Settings2, Users } from "lucide-react";
 
-export const sidebarItems = [
+export const navItems = [
     {
         label: "Dashboard",
         icon: Users,
@@ -34,3 +34,5 @@ export const sidebarItems = [
 ] as const;
 
 export const placeholderImage = "/placeholder.png";
+
+export const DEFAULT_ADMISSION_FEE = 500;

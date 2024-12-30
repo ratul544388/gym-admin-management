@@ -1,7 +1,7 @@
 "use server";
 import { signIn, signOut } from "@/auth";
 import { db } from "@/lib/db";
-import { userSchema } from "@/schemas";
+import { loginSchema, registerSchema } from "@/schemas";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 import { z } from "zod";
@@ -16,8 +16,8 @@ export const getUserById = async (userId: string) => {
   return user;
 };
 
-export const register = async (values: z.infer<typeof userSchema>) => {
-  const validatedSchema = userSchema.safeParse(values);
+export const register = async (values: z.infer<typeof registerSchema>) => {
+  const validatedSchema = registerSchema.safeParse(values);
   if (!validatedSchema.success) {
     return { error: "Invalid fields" };
   }
@@ -57,8 +57,8 @@ export const register = async (values: z.infer<typeof userSchema>) => {
   }
 };
 
-export const login = async (values: z.infer<typeof userSchema>) => {
-  const validatedSchema = userSchema.safeParse(values);
+export const login = async (values: z.infer<typeof loginSchema>) => {
+  const validatedSchema = loginSchema.safeParse(values);
   if (!validatedSchema.success) {
     return { error: "Invalid fields" };
   }

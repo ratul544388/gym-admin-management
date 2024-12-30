@@ -5,14 +5,17 @@ import axios from "axios";
 import { ImagePlus } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
+import { toast } from "sonner";
 
 interface ImageUploadProps {
   onChange: (value: string) => void;
   disabled?: boolean;
   value?: string;
-  isUploadingImage: boolean;
+  isImageUploading: boolean;
   onChangeUploadingImage: (value: boolean) => void;
 }
 
@@ -20,7 +23,7 @@ export const ImageUpload = ({
   onChange,
   disabled,
   value,
-  isUploadingImage,
+  isImageUploading,
   onChangeUploadingImage,
 }: ImageUploadProps) => {
   const [previewImage, setPreviewImage] = useState(value);
@@ -52,6 +55,7 @@ export const ImageUpload = ({
       setUploadProgress(0);
       onChange(response.data.secure_url);
     } catch (error) {
+      toast.error("Error while uploading image")
       console.log(error);
     } finally {
       onChangeUploadingImage(false);
@@ -63,6 +67,7 @@ export const ImageUpload = ({
       <input
         id="file"
         type="file"
+        accept="image/*"
         className="pointer-events-none size-0 opacity-0"
         onChange={onSelectFile}
       />
@@ -79,15 +84,25 @@ export const ImageUpload = ({
         />
       )}
       <Button
-        disabled={disabled || isUploadingImage}
+        disabled={disabled || isImageUploading}
         size="icon"
         variant="ghost"
-        className="abs_center rounded-full bg-black/40 hover:bg-black/60"
+        type="button"
+        className="abs-center rounded-full bg-black/40 hover:bg-black/60"
       >
         <Label htmlFor="file" className="cursor-pointer">
           <ImagePlus className="size-6" />
         </Label>
       </Button>
+      {!!uploadProgress && (
+        <CircularProgressbar
+          value={uploadProgress}
+          className="abs_center size-12"
+          styles={buildStyles({
+            pathColor: "hsl(var(--primary))",
+          })}
+        />
+      )}
     </div>
   );
 };
