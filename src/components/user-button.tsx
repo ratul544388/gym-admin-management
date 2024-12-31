@@ -1,15 +1,13 @@
 "use client";
 
-import { DropdownMenuItemType } from "@/types";
-import { DropDownMenu } from "./dropdown-menu";
 import { logout } from "@/actions/users";
-import { useCurrentUser } from "@/hooks/use-current-user";
-import UserAvatar from "./user-avatar";
+import { CurrentUser, DropdownMenuItemType } from "@/types";
 import { LogOut, User2, UserRoundPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { DropDownMenu } from "./dropdown-menu";
+import UserAvatar from "./user-avatar";
 
-export const UserButton = () => {
-  const currentUser = useCurrentUser();
+export const UserButton = ({currentUser} : {currentUser: CurrentUser}) => {
   const router = useRouter();
   const items: DropdownMenuItemType[] = [
     ...(currentUser

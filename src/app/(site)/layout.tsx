@@ -14,11 +14,12 @@ export default async function MainLayout({
     redirect("/");
   }
   return (
-    <>
-      <Container elem="main" className="px-4 pb-20 md:pl-[264px]">
-        <DesktopSidebar />
-        {children}
-      </Container>
-    </>
+    <Container
+      elem="main"
+      className="h-offset-screen px-3 pb-14 pt-3 md:pl-[264px]"
+    >
+      <DesktopSidebar />
+      {children}
+    </Container>
   );
 }

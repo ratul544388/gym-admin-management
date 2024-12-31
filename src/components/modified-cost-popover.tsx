@@ -24,9 +24,10 @@ export const ModifiedCostPopover = ({
   className,
 }: ModifiedCostPopoverProps) => {
   const [open, setOpen] = useState(false);
+  const [inputValue, setInputValue] = useState(value);
 
   const handleSubmit = (e: React.MouseEvent<HTMLFormElement>) => {
-    onChange(value || 0);
+    onChange(inputValue || 0);
     setOpen(false);
     e.preventDefault();
     e.stopPropagation();
@@ -41,12 +42,19 @@ export const ModifiedCostPopover = ({
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <h5>{title}</h5>
           <Input
-            value={value}
-            onChange={(e) => onChange(Number(e.target.value))}
+            value={inputValue || ""}
+            onChange={(e) => setInputValue(Number(e.target.value))}
           />
-          <Button type="button" className="ml-auto">
-            Save
-          </Button>
+          <div className="flex justify-end gap-3">
+            <Button
+              variant="ghost"
+              onClick={() => setOpen(false)}
+              type="button"
+            >
+              Cancel
+            </Button>
+            <Button>Save</Button>
+          </div>
         </form>
       </PopoverContent>
     </Popover>

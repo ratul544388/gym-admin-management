@@ -6,6 +6,8 @@ import { db } from '@/lib/db'
 
 const ExpensesPage = async () => {
   const expenses = await db.expense.findMany();
+
+  // await new Promise((resolve) => setTimeout(resolve, 2000));
   return (
     <div className='space-y-3'>
       <PageHeader label='Expenses' actionUrl='/expenses/new'/>

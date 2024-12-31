@@ -20,7 +20,7 @@ export const PageHeader = ({
 }: PageHeaderProps) => {
   const router = useRouter();
   return (
-    <div className="flex items-center p-3 mt-3 rounded-md border-b border-dashed bg-background">
+    <div className="flex items-center p-3 rounded-md border-b border-dashed bg-background">
       {showBackButton && (
         <Button
           onClick={() => router.back()}

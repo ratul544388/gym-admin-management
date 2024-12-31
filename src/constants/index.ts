@@ -1,14 +1,14 @@
-import { Diamond, DollarSign, LayoutDashboard, Lock, Settings2, Users } from "lucide-react";
+import { Diamond, DollarSign, LayoutDashboard, Lock, Settings2, Users2 } from "lucide-react";
 
 export const navItems = [
     {
         label: "Dashboard",
-        icon: Users,
+        icon: LayoutDashboard,
         href: "/dashboard",
     },
     {
         label: "Members",
-        icon: LayoutDashboard,
+        icon: Users2,
         href: "/members",
     },
     {
@@ -36,3 +36,7 @@ export const navItems = [
 export const placeholderImage = "/placeholder.png";
 
 export const DEFAULT_ADMISSION_FEE = 500;
+
+export const VIEW_PER_PAGE = 10
+
+export const today = new Date();

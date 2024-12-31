@@ -3,6 +3,7 @@ import { clsx, type ClassValue } from "clsx";
 import { format } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import bcrypt from "bcryptjs";
+import { VIEW_PER_PAGE } from "@/constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -78,4 +79,11 @@ export const getEndDate = ({
   const endDate = new Date(startDate);
   endDate.setMonth(startDate.getMonth() + durationInMonth);
   return endDate;
+};
+
+export const getSkip = (
+  page: number | string = 1,
+  viewPerPage: number = VIEW_PER_PAGE,
+) => {
+  return (Number(page) - 1) * viewPerPage;
 };

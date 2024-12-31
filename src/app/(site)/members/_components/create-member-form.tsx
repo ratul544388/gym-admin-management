@@ -16,6 +16,7 @@ import { createMember } from "@/actions/members";
 import { DatePicker } from "@/components/date-picker";
 import { FormCard } from "@/components/form-card";
 import { ImageUpload } from "@/components/image-upload";
+import { LoadingButton } from "@/components/loading-button";
 import { ModifiedCostPopover } from "@/components/modified-cost-popover";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -119,14 +120,14 @@ export const CreateMemberForm = ({
   }, [membershipPlanStartDate, selectedMembershipPlan]);
 
   const lockerCost = useMemo(() => {
-    if (modifiedLockerCost) return modifiedLockerCost;
+    if (modifiedLockerCost !== undefined) return modifiedLockerCost;
     if (selectedLocker) {
       return selectedLocker.price * lockerDurationInMonth;
     }
   }, [lockerDurationInMonth, modifiedLockerCost, selectedLocker]);
 
   const totalCost = useMemo(() => {
-    if (modifiedTotalCost) return modifiedTotalCost;
+    if (modifiedTotalCost !== undefined) return modifiedTotalCost;
 
     if (selectedMembershipPlan) {
       return (
@@ -157,6 +158,8 @@ export const CreateMemberForm = ({
     setModifiedTotalCost(undefined);
     setModifiedLockerCost(undefined);
   };
+
+  console.log({ lockerCost, totalCost });
 
   return (
     <Form {...form}>
@@ -479,9 +482,9 @@ export const CreateMemberForm = ({
                 </ModifiedCostPopover>
               </>
             )}
-            <Button type="submit" disabled={isPending || isImageUploading}>
+            <LoadingButton isLoading={isPending} type="submit">
               Create
-            </Button>
+            </LoadingButton>
           </div>
         </FormCard>
       </form>

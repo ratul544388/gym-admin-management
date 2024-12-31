@@ -23,7 +23,7 @@ export default async function RootLayout({
   return (
     <SessionProvider session={session}>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${fontsClasses} bg-background_2 antialiased`}>
+        <body className={`${fontsClasses} bg-background_2 h-full antialiased`}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

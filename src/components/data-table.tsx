@@ -26,6 +26,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Input } from "./ui/input";
 import { Pagination } from "./pagination";
+import { VIEW_PER_PAGE } from "@/constants";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -33,7 +34,7 @@ interface DataTableProps<TData, TValue> {
   showSearchInput?: boolean;
   searchInputPlaceholder?: string;
   deleteModalType?: ModalType;
-  totalPage?: number;
+  totalPages?: number;
 }
 
 export function DataTable<TData, TValue>({
@@ -42,7 +43,7 @@ export function DataTable<TData, TValue>({
   showSearchInput,
   searchInputPlaceholder = "Search here",
   deleteModalType,
-  totalPage,
+  totalPages,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
   const [rowSelection, setRowSelection] = useState({});
@@ -188,7 +189,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      {!!totalPage && totalPage > 10 && <Pagination maxPages={totalPage} />}
+      {!!totalPages && totalPages > VIEW_PER_PAGE && <Pagination className="mt-4" maxPages={totalPages} />}
     </div>
   );
 }

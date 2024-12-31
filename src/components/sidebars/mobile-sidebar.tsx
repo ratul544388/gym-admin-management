@@ -7,15 +7,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { CurrentUser } from "@/types";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "../logo";
 import { Button } from "../ui/button";
 import { NavItems } from "./nav-items";
-import { useCurrentUser } from "@/hooks/use-current-user";
-export const MobileSidebar = () => {
+export const MobileSidebar = ({currentUser} : {currentUser: CurrentUser}) => {
   const [open, setOpen] = useState(false);
-  const currentUser = useCurrentUser();
 
   if (!currentUser) return null;
 

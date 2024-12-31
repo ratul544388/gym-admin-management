@@ -16,6 +16,8 @@ const AddNewMemberPage = async () => {
     }),
   ]);
 
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+
   if (!membershipPlans.length) {
     redirect("/membership-plans/new");
   }

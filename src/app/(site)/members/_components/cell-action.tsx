@@ -14,42 +14,44 @@ export const CellAction = ({ member }: CellActionProps) => {
   const router = useRouter();
   const { onOpen } = useModalStore();
 
-  // const isRenewable = member.membershipPlanEndDate < new Date();
-  const isRenewable = true;
+  const { membershipPlanEndDate, id } = member;
+
+  const isRenewable =
+    membershipPlanEndDate.getTime() - new Date().getTime() <= 7;
 
   const items = [
     {
       label: "View Profile",
-      onClick: () => router.push(`/members/${member.id}/profile`),
+      onClick: () => router.push(`/members/${id}/profile`),
     },
     ...(isRenewable
       ? [
           {
             label: "Renew Member",
-            onClick: () => router.push(`/members/${member.id}/renew`),
+            onClick: () => router.push(`/members/${id}/renew`),
           },
         ]
       : []),
     {
       label: "Edit Member",
-      onClick: () => router.push(`/members/${member.id}/edit`),
+      onClick: () => router.push(`/members/${id}/edit`),
     },
     ...(!member.lockerId
       ? [
           {
             label: "Assign Locker",
-            onClick: () => router.push(`/members/${member.id}/assign-locker`),
+            onClick: () => router.push(`/members/${id}/assign-locker`),
           },
         ]
       : [
           {
             label: "Unassign Locker",
-            onClick: () => onOpen("unassignLockerModal", { id: member.id }),
+            onClick: () => onOpen("unassignLockerModal", { id: id }),
           },
         ]),
     {
       label: "Delete Member",
-      onClick: () => onOpen("deleteMemberModal", { ids: [member.id] }),
+      onClick: () => onOpen("deleteMemberModal", { ids: [id] }),
     },
   ];
 

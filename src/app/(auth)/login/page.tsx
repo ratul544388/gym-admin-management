@@ -6,7 +6,8 @@ import { z } from "zod";
 
 import { login } from "@/actions/users";
 import { FormCard } from "@/components/form-card";
-import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/loading-button";
+import { PasswordInput } from "@/components/password-input";
 import {
   Form,
   FormControl,
@@ -16,15 +17,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { loginSchema } from "@/schemas";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import Link from "next/link";
-import { OrSeparator } from "../_components/or-separator";
 import { GoogleLoginButton } from "../_components/google-login-button";
-import { useRouter } from "next/navigation";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { PasswordInput } from "@/components/password-input";
+import { OrSeparator } from "../_components/or-separator";
 
 const LoginPage = () => {
   const [isPending, startTransition] = useTransition();
@@ -63,7 +63,7 @@ const LoginPage = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input autoFocus placeholder="Enter Your Email" {...field} />
+                  <Input disabled={isPending} autoFocus placeholder="Enter Your Email" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -76,17 +76,15 @@ const LoginPage = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <PasswordInput placeholder="Enter Your Password" {...field} />
+                  <PasswordInput disabled={isPending} placeholder="Enter Your Password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={isPending}>
-            Login
-          </Button>
+          <LoadingButton isLoading={isPending}>Login</LoadingButton>
           <OrSeparator />
-          <GoogleLoginButton />
+          <GoogleLoginButton disabled={isPending}/>
           <div className="text-center">
             Do not have an account?{" "}
             <Link href="/register" className="text-blue-500 underline">

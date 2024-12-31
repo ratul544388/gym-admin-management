@@ -1,6 +1,8 @@
 import { DataTable } from "@/components/data-table";
 import { PageHeader } from "@/components/page-header";
+import { VIEW_PER_PAGE } from "@/constants";
 import { db } from "@/lib/db";
+import { getSkip } from "@/lib/utils";
 import { SearchParamsType, StatusType } from "@/types";
 import { Gender, Prisma } from "@prisma/client";
 import { columns } from "./_components/columns";
@@ -12,7 +14,6 @@ const getMembers = async ({
   where: Prisma.MemberWhereInput;
   skip: number;
 }) => {
-  const VIEW_PER_PAGE = 10;
   const members = await db.member.findMany({
     where,
     include: {
@@ -41,7 +42,7 @@ export default async function MembersPage({
 }: {
   searchParams: SearchParamsType;
 }) {
-  const page = Number((await searchParams).page) || 1;
+  const page = (await searchParams).page || 1;
   const q = (await searchParams).q as string;
   const membershipPlan = (await searchParams).membership_plan as string;
   const gender = (
@@ -52,9 +53,7 @@ export default async function MembersPage({
     (await searchParams).status as string
   )?.toUpperCase() as StatusType;
 
-  const VIEW_PER_PAGE = 1;
-
-  const skip = (page - 1) * VIEW_PER_PAGE;
+  const skip = getSkip(page);
 
   const where: Prisma.MemberWhereInput = {
     ...(gender
@@ -136,7 +135,7 @@ export default async function MembersPage({
         data={members}
         showSearchInput
         deleteModalType="deleteMemberModal"
-        totalPage={totalPages}
+        totalPages={totalPages}
       />
     </div>
   );

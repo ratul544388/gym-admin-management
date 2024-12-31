@@ -4,7 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Button } from "@/components/ui/button";
+import { createLocker, updateLocker } from "@/actions/lockers";
+import { FormCard } from "@/components/form-card";
+import { LoadingButton } from "@/components/loading-button";
 import {
   Form,
   FormControl,
@@ -15,12 +17,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { lockerSchema } from "@/schemas";
-import { createLocker, updateLocker } from "@/actions/lockers";
 import { Locker } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { FormCard } from "@/components/form-card";
 
 export const LockerForm = ({ locker }: { locker?: Locker | null }) => {
   const [isPending, startTransition] = useTransition();
@@ -52,7 +52,6 @@ export const LockerForm = ({ locker }: { locker?: Locker | null }) => {
         createLocker(values).then(({ success, error }) => {
           if (success) {
             toast.success(success);
-            form.reset();
             router.push("/lockers");
             router.refresh();
           } else {
@@ -80,6 +79,7 @@ export const LockerForm = ({ locker }: { locker?: Locker | null }) => {
                     placeholder="Enter Locker Number"
                     value={field.value || ""}
                     onChange={field.onChange}
+                    disabled={isPending}
                   />
                 </FormControl>
                 <FormMessage />
@@ -98,15 +98,16 @@ export const LockerForm = ({ locker }: { locker?: Locker | null }) => {
                     placeholder="Duration In Month"
                     value={field.value || ""}
                     onChange={field.onChange}
+                    disabled={isPending}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={isPending} className="ml-auto">
+          <LoadingButton isLoading={isPending} className="ml-auto">
             {locker ? "Update" : "Create"}
-          </Button>
+          </LoadingButton>
         </FormCard>
       </form>
     </Form>

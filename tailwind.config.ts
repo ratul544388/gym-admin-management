@@ -9,6 +9,12 @@ export default {
   ],
   theme: {
     extend: {
+      height: {
+        "offset-screen": "calc(100vh - 65px)",
+      },
+      width: {
+        "sidebar_width": "240px"
+      },
       fontFamily: {
         geist_sans: ["var(--font-geist-sans)"],
         geist_mono: ["var(--font-geist-mono)"],
