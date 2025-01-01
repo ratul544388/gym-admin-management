@@ -82,10 +82,12 @@ export const assignLocker = async ({
   values,
   cost,
   endDate: lockerEndDate,
+  isRenew,
 }: {
   values: z.infer<typeof assignLockerSchema>;
   cost: number;
   endDate: Date;
+  isRenew?: boolean;
 }) => {
   try {
     const validatedFields = assignLockerSchema.safeParse(values);
@@ -103,6 +105,7 @@ export const assignLocker = async ({
         lockerId,
         lockerStartDate,
         lockerEndDate,
+        isLockerRenewed: isRenew,
         costRecords: {
           create: {
             cost,

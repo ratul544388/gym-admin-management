@@ -2,7 +2,11 @@ import { Loader } from "@/components/loader";
 import React from "react";
 
 const Loading = () => {
-  return <Loader className="text-primary abs-center ml-[calc(sidebar-width_-_20px)]" />;
+  return (
+    <div className="flex min-h-offset-screen items-center justify-center">
+      <Loader />
+    </div>
+  );
 };
 
 export default Loading;

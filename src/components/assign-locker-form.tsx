@@ -23,11 +23,13 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Combobox } from "./combobox";
 import { DatePicker } from "./date-picker";
 import { MemberCombobox } from "./members-combobox";
+import { LockerDurationAdjuster } from "@/app/(site)/lockers/_components/locker-duration-adjuster";
+import { ModifiedCostPopover } from "./modified-cost-popover";
 
 export const AssignLockerForm = ({
   lockerId,
@@ -38,6 +40,10 @@ export const AssignLockerForm = ({
 }) => {
   const queryClient = useQueryClient();
   const [isPending, startTransition] = useTransition();
+  const [modifiedCost, setModifiedCost] = useState<number | undefined>(
+    undefined,
+  );
+  const [lockerDurationInMonth, setLockerDurationInMonth] = useState(1);
   const router = useRouter();
   const form = useForm<z.infer<typeof assignLockerSchema>>({
     resolver: zodResolver(assignLockerSchema),
@@ -51,23 +57,20 @@ export const AssignLockerForm = ({
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof assignLockerSchema>) {
     startTransition(() => {
-      if (!endDate) return;
-      assignLocker({ values, endDate, cost: 200 }).then(
-        ({ success, error }) => {
-          if (success) {
-            toast.success(success);
-            form.reset();
-            router.push(memberId ? "/members" : "/lockers");
-            queryClient.invalidateQueries([
-              "availableLockers",
-              "searchMemberOnAssignLockerForm",
-            ] as InvalidateQueryFilters);
-            router.refresh();
-          } else {
-            toast.error(error);
-          }
-        },
-      );
+      if (!endDate || !cost) return;
+      assignLocker({ values, endDate, cost }).then(({ success, error }) => {
+        if (success) {
+          toast.success(success);
+          router.back();
+          queryClient.invalidateQueries([
+            "availableLockers",
+            "searchMemberOnAssignLockerForm",
+          ] as InvalidateQueryFilters);
+          router.refresh();
+        } else {
+          toast.error(error);
+        }
+      });
     });
   }
 
@@ -79,9 +82,20 @@ export const AssignLockerForm = ({
   const selectedMemberId = form.getValues("memberId");
   const selectedLockerId = form.getValues("lockerId");
   const startDate = form.getValues("startDate");
+  
   const endDate = startDate
     ? getEndDate({ startDate, durationInMonth: 1 })
     : undefined;
+
+  const selectedLocker = useMemo(() => {
+    return lockers?.find((locker) => locker.id === selectedLockerId);
+  }, [lockers, selectedLockerId]);
+
+  const cost = useMemo(() => {
+    if (!selectedLocker) return;
+    if (modifiedCost !== undefined) return modifiedCost;
+    return selectedLocker.price * lockerDurationInMonth;
+  }, [lockerDurationInMonth, modifiedCost, selectedLocker]);
 
   return (
     <Form {...form}>
@@ -93,32 +107,44 @@ export const AssignLockerForm = ({
               memberId && "flex-col-reverse",
             )}
           >
-            <FormField
-              control={form.control}
-              name="lockerId"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Locker</FormLabel>
-                  <FormControl>
-                    <Combobox
-                      value={field.value}
-                      onChange={field.onChange}
-                      options={
-                        lockers?.map(({ lockerNo, id }) => {
-                          return {
-                            label: lockerNo.toString(),
-                            value: id,
-                          };
-                        }) || []
-                      }
-                      placeholder="Select Locker"
-                      isLoadingOptions={isFetchingLockers}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+            <div className="space-y-8">
+              <FormField
+                control={form.control}
+                name="lockerId"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Locker</FormLabel>
+                    <FormControl>
+                      <Combobox
+                        disabled={isFetchingLockers}
+                        value={field.value}
+                        onChange={field.onChange}
+                        options={
+                          lockers?.map(({ lockerNo, id }) => {
+                            return {
+                              label: lockerNo.toString(),
+                              value: id,
+                            };
+                          }) || []
+                        }
+                        placeholder="Select Locker"
+                        isLoadingOptions={isFetchingLockers}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {selectedLockerId && (
+                <LockerDurationAdjuster
+                  value={lockerDurationInMonth}
+                  onChange={(value) => {
+                    setLockerDurationInMonth(value);
+                    setModifiedCost(undefined);
+                  }}
+                />
               )}
-            />
+            </div>
             <FormField
               control={form.control}
               name="memberId"
@@ -129,6 +155,7 @@ export const AssignLockerForm = ({
                     <MemberCombobox
                       memberId={field.value}
                       onChange={field.onChange}
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -169,9 +196,17 @@ export const AssignLockerForm = ({
               </p>
             )}
           </div>
-          <Button type="submit" disabled={isPending} className="ml-auto">
-            Assign
-          </Button>
+          <div className="flex items-center justify-end gap-3 font-semibold text-primary">
+            {selectedLocker && (
+              <div>
+                Paying Amount:&nbsp;
+                <ModifiedCostPopover value={cost} onChange={setModifiedCost}>
+                  {cost}/-
+                </ModifiedCostPopover>
+              </div>
+            )}
+            <Button type="submit">Assign</Button>
+          </div>
         </FormCard>
       </form>
     </Form>

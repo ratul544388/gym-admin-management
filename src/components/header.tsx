@@ -10,7 +10,7 @@ export const Header = async () => {
   return (
     <Container
       elem="header"
-      className="sticky top-0 z-50 flex h-[65px] items-center border-b bg-background"
+      className="sticky top-0 z-50 flex h-[65px] items-center border-b bg-background max-w-[initial]"
     >
       <div className="flex items-center gap-3">
         <MobileSidebar currentUser={currentUser} />

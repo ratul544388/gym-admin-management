@@ -1,7 +1,9 @@
 "use server";
 import { signIn, signOut } from "@/auth";
 import { db } from "@/lib/db";
+import { getCurrentUser } from "@/lib/get-current-user";
 import { loginSchema, registerSchema } from "@/schemas";
+import { Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 import { z } from "zod";
@@ -39,6 +41,7 @@ export const register = async (values: z.infer<typeof registerSchema>) => {
 
     await db.user.create({
       data: {
+        name: "",
         email,
         password: hashedPassword,
       },
@@ -104,3 +107,26 @@ export const googleLogin = async () => {
 export const logout = async () => {
   await signOut({ redirectTo: "/login" });
 };
+
+export const changeRole = async ({id, role} : {id: string, role: Role}) => {
+  const currentUser = await getCurrentUser();
+  try {
+    if(currentUser?.role !== "ADMIN") {
+      return {error: "You are not authorized to perform this action"}
+    }
+
+    await db.user.update({
+      where: {
+        id
+      },
+      data: {
+        role
+      }
+    })
+    
+    return {success: "Role updated successfully"}
+  } catch (error) {
+    console.log(error);
+    return {error: "Something went wrong"}
+  }
+}

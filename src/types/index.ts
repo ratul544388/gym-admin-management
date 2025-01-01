@@ -2,10 +2,10 @@ import { Locker, Member, MembershipPlan, Role } from "@prisma/client";
 import { LucideIcon } from "lucide-react";
 
 export type SearchParamsType = Promise<{
-  [key: string]: string;
+  [key: string]: string | undefined
 }>;
 
-export type ParamsType = Promise<{ id: string }>;
+export type ParamsType = Promise<{ [key: string]: string }>;
 
 export type CurrentUser = {
   name?: string | null;
@@ -40,4 +40,18 @@ export type FullMembershipPlanType = MembershipPlan & {
   _count: {
     members: number;
   };
+};
+
+export type ExpenseVsRevenueChartType = {
+  month: string;
+  expenses: number;
+  revenue: number;
+}[];
+
+export type UserType = {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+  image: string | null;
 };

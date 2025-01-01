@@ -7,9 +7,9 @@ import Image from "next/image";
 import { useState } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
-import { toast } from "sonner";
 
 interface ImageUploadProps {
   onChange: (value: string) => void;
@@ -94,10 +94,10 @@ export const ImageUpload = ({
           <ImagePlus className="size-6" />
         </Label>
       </Button>
-      {!!uploadProgress && (
+      {!!!uploadProgress && (
         <CircularProgressbar
-          value={uploadProgress}
-          className="abs_center size-12"
+          value={100}
+          className="absolute top-1/2 -translate-y-1/2 size-12"
           styles={buildStyles({
             pathColor: "hsl(var(--primary))",
           })}

@@ -1,7 +1,6 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import UserAvatar from "@/components/user-avatar";
 import { placeholderImage } from "@/constants";
 import { capitalize, formatDate, getStatus } from "@/lib/utils";
@@ -15,30 +14,6 @@ import { TableHeaderMembershipPlan } from "./table-header-membership-plan";
 
 export const columns: ColumnDef<FullMemberType>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => {
-          row.toggleSelected(!!value);
-        }}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
     accessorKey: "memberId",
     header: "ID",
   },
@@ -51,7 +26,7 @@ export const columns: ColumnDef<FullMemberType>[] = [
       const href = `/members/${row.original.id}/profile`;
       return (
         <Link href={href} className="group flex items-center gap-2 pr-6">
-          <UserAvatar avatarUrl={imageUrl} />
+          <UserAvatar src={imageUrl} alt={name}/>
           <p className="group-hover:underline">{name}</p>
         </Link>
       );

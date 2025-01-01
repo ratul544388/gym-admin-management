@@ -5,21 +5,21 @@ import { CalendarIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { FormControl } from "@/components/ui/form";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import React, { useState } from "react";
+import { useState } from "react";
 
 interface DatePickerProps {
   value?: Date;
-  onChange: (date?: Date) => void;
+  onChange: (date: Date) => void;
+  disabled?: boolean;
 }
 
-export function DatePicker({ value, onChange }: DatePickerProps) {
+export function DatePicker({ value, onChange, disabled }: DatePickerProps) {
   const [open, setOpen] = useState(false);
 
   const handleSelect = (selectedDate: Date | undefined) => {
@@ -38,15 +38,14 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <FormControl>
           <Button
+            disabled={disabled}
             variant={"outline"}
             className={cn("w-full pl-3 text-left font-normal")}
           >
             {value ? format(value, "PPP") : <span>Pick a date</span>}
             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
           </Button>
-        </FormControl>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar

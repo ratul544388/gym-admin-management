@@ -17,11 +17,7 @@ const MembershipPlansPage = async () => {
   return (
     <div className="">
       <PageHeader label="Membership Plan" actionUrl="/membership-plans/new" />
-      <DataTable
-        columns={columns}
-        data={membershipPlans}
-        deleteModalType="deleteMembershipPlanModal"
-      />
+      <DataTable columns={columns} data={membershipPlans} />
     </div>
   );
 };

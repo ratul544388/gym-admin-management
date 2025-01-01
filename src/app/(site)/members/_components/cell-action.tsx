@@ -1,8 +1,10 @@
 "use client";
 
 import { DropDownMenu } from "@/components/dropdown-menu";
+import { today } from "@/constants";
 import { useModalStore } from "@/hooks/use-modal-store";
 import { FullMemberType } from "@/types";
+import { differenceInDays } from "date-fns";
 import { MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -14,21 +16,31 @@ export const CellAction = ({ member }: CellActionProps) => {
   const router = useRouter();
   const { onOpen } = useModalStore();
 
-  const { membershipPlanEndDate, id } = member;
+  const { membershipPlanEndDate, id, lockerEndDate, lockerId } = member;
 
-  const isRenewable =
-    membershipPlanEndDate.getTime() - new Date().getTime() <= 7;
+  const isMembershipPlanRenewable =
+    differenceInDays(membershipPlanEndDate, today) <= 7;
+  const isLockerRenewable =
+    !!lockerEndDate && differenceInDays(lockerEndDate, today) <= 7;
 
   const items = [
     {
       label: "View Profile",
       onClick: () => router.push(`/members/${id}/profile`),
     },
-    ...(isRenewable
+    ...(isMembershipPlanRenewable
       ? [
           {
-            label: "Renew Member",
+            label: "Renew Membership Plan",
             onClick: () => router.push(`/members/${id}/renew`),
+          },
+        ]
+      : []),
+    ...(isLockerRenewable
+      ? [
+          {
+            label: "Renew Locker",
+            onClick: () => router.push(`/lockers/${lockerId}/renew/${id}`),
           },
         ]
       : []),

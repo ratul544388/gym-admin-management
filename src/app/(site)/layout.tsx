@@ -16,7 +16,7 @@ export default async function MainLayout({
   return (
     <Container
       elem="main"
-      className="h-offset-screen px-3 pb-14 pt-3 md:pl-[264px]"
+      className="min-h-offset-screen px-3 pb-14 md:pl-[264px]"
     >
       <DesktopSidebar />
       {children}

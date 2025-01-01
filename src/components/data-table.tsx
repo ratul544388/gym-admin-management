@@ -18,23 +18,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import useDebounce from "@/hooks/use-debounce";
-import { ModalType, useModalStore } from "@/hooks/use-modal-store";
-import { useQueryParams } from "@/hooks/use-query-params";
-import { Member } from "@prisma/client";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { Input } from "./ui/input";
-import { Pagination } from "./pagination";
 import { VIEW_PER_PAGE } from "@/constants";
+import useDebounce from "@/hooks/use-debounce";
+import { useQueryParams } from "@/hooks/use-query-params";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { Pagination } from "./pagination";
+import { Input } from "./ui/input";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   showSearchInput?: boolean;
   searchInputPlaceholder?: string;
-  deleteModalType?: ModalType;
-  totalPages?: number;
+  dataCount?: number;
 }
 
 export function DataTable<TData, TValue>({
@@ -42,10 +39,8 @@ export function DataTable<TData, TValue>({
   data,
   showSearchInput,
   searchInputPlaceholder = "Search here",
-  deleteModalType,
-  totalPages,
+  dataCount = 1,
 }: DataTableProps<TData, TValue>) {
-  const router = useRouter();
   const [rowSelection, setRowSelection] = useState({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const table = useReactTable({
@@ -66,9 +61,6 @@ export function DataTable<TData, TValue>({
   const searchParams = useSearchParams();
   const setQueryParams = useQueryParams();
   const debouncedValue = useDebounce(searchQuery, 500);
-  const { onOpen } = useModalStore();
-  const showDeleteButton = table.getSelectedRowModel().rows.length > 0;
-  const showEditButton = table.getSelectedRowModel().rows.length === 1;
 
   const showResetButton =
     !!table.getSelectedRowModel().rows.length || !!searchParams.size;
@@ -86,6 +78,8 @@ export function DataTable<TData, TValue>({
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
+
+  const totalPages = Math.ceil(dataCount / VIEW_PER_PAGE);
 
   return (
     <div className="mt-4">
@@ -110,32 +104,6 @@ export function DataTable<TData, TValue>({
             }}
           >
             Reset Filters
-          </Button>
-        )}
-        {showDeleteButton && deleteModalType && (
-          <Button
-            onClick={() => {
-              const selectedIds = table
-                .getSelectedRowModel()
-                .rows.map((row) => (row.original as Member).id);
-              onOpen(deleteModalType, { ids: selectedIds });
-            }}
-            variant="destructive"
-          >
-            Delete
-          </Button>
-        )}
-        {showEditButton && (
-          <Button
-            onClick={() => {
-              const id = (
-                table.getSelectedRowModel().rows[0].original as Member
-              ).id;
-              router.push(`/membership-plans/edit/${id}`);
-            }}
-            variant="default"
-          >
-            Edit
           </Button>
         )}
       </div>
@@ -189,7 +157,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      {!!totalPages && totalPages > VIEW_PER_PAGE && <Pagination className="mt-4" maxPages={totalPages} />}
+      {totalPages > 1 && <Pagination className="mt-4" maxPages={totalPages} />}
     </div>
   );
 }

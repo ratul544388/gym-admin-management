@@ -3,6 +3,8 @@ import { today } from "@/constants";
 import { db } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import { endOfMonth, startOfMonth } from "date-fns";
+import { RevenueVsExpenseChart } from "./_components/revenue-vs-expense-chart";
+import { getRevenueVsExpenseChartData } from "@/actions/charts";
 
 const DashboardPage = async () => {
   const [
@@ -12,6 +14,7 @@ const DashboardPage = async () => {
     totalRevenue,
     thisMonthRevenue,
     thisMonthExpense,
+    revenueVsExpenseChartData,
   ] = await Promise.all([
     db.member.count(),
     db.member.count({
@@ -59,6 +62,7 @@ const DashboardPage = async () => {
         cost: true,
       },
     }),
+    getRevenueVsExpenseChartData(),
   ]);
 
   const data = [
@@ -79,17 +83,17 @@ const DashboardPage = async () => {
     },
     {
       label: "Total Revenue",
-      value: `${totalRevenue._sum.cost}/-`,
+      value: `${totalRevenue._sum.cost || 0}/-`,
       className: "",
     },
     {
       label: "This Month Revenue",
-      value: `${thisMonthRevenue._sum.cost}/-`,
+      value: `${thisMonthRevenue._sum.cost || 0}/-`,
       className: "",
     },
     {
       label: "This Month Expense",
-      value: `${thisMonthExpense._sum.cost}/-`,
+      value: `${thisMonthExpense._sum.cost || 0}/-`,
       className: "",
     },
   ];
@@ -97,7 +101,7 @@ const DashboardPage = async () => {
   return (
     <>
       <PageHeader label="Dashboard" />
-      <ul className="mt-5 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <ul className="mt-5 grid grid-cols-2 gap-6 lg:grid-cols-3 xl:grid-cols-4">
         {data.map(({ label, value, className }) => (
           <li
             key={label}
@@ -108,6 +112,7 @@ const DashboardPage = async () => {
           </li>
         ))}
       </ul>
+      <RevenueVsExpenseChart chartData={revenueVsExpenseChartData} />
     </>
   );
 };

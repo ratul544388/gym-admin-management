@@ -1,8 +1,7 @@
-import { Loader } from "@/components/loader";
-import React from "react";
+import { TablePageSkeleton } from "@/components/table-page-skeleton";
 
 const Loading = () => {
-  return <Loader className="text-primary abs-center ml-[calc(sidebar-width_-_20px)]" />;
+  return <TablePageSkeleton />;
 };
 
 export default Loading;

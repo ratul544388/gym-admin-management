@@ -14,13 +14,13 @@ interface AddmissionFeeFormProps {
 export const AddmissionFeeForm = ({
   admissionFee = DEFAULT_ADMISSION_FEE,
 }: AddmissionFeeFormProps) => {
-  const [value, setValue] = useState(admissionFee);
+  const [value, setValue] = useState<string>(String(admissionFee));
   const [isPending, startTransition] = useTransition();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     startTransition(() => {
-      setDefaultAdmissionFee(value).then(({ success, error }) => {
+      setDefaultAdmissionFee(Number(value)).then(({ success, error }) => {
         if (success) {
           toast.error(success);
         } else {
@@ -37,10 +37,10 @@ export const AddmissionFeeForm = ({
         disabled={isPending}
         type="number"
         className="ml-auto w-32"
-        value={value || ""}
-        onChange={(e) => setValue(Number(e.target.value))}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
       />
-      <Button disabled={isPending} className="ml-4">
+      <Button disabled={isPending || !value} className="ml-4">
         Save
       </Button>
     </form>

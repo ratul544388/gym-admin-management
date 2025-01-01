@@ -39,7 +39,7 @@ export const UserButton = ({currentUser} : {currentUser: CurrentUser}) => {
 
   return (
     <DropDownMenu items={items} align="end">
-      <UserAvatar avatarUrl={currentUser?.image} />
+      <UserAvatar src={currentUser?.image} alt={currentUser?.name}/>
     </DropDownMenu>
   );
 };

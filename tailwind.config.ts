@@ -9,7 +9,7 @@ export default {
   ],
   theme: {
     extend: {
-      height: {
+      minHeight: {
         "offset-screen": "calc(100vh - 65px)",
       },
       width: {

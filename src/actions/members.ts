@@ -225,12 +225,6 @@ export const searchMembersForLocker = async (q: string) => {
             mode: "insensitive",
           },
         },
-        {
-          phone: {
-            contains: q,
-            mode: "insensitive",
-          },
-        },
       ],
     },
     select: {

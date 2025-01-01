@@ -23,6 +23,7 @@ interface ComboboxProps {
   onChange: (value: string) => void;
   placeholder?: string;
   isLoadingOptions?: boolean;
+  disabled?: boolean;
 }
 
 export const Combobox = ({
@@ -31,6 +32,7 @@ export const Combobox = ({
   onChange,
   placeholder = "Select an option",
   isLoadingOptions,
+  disabled,
 }: ComboboxProps) => {
   const [open, setOpen] = useState(false);
 
@@ -42,6 +44,7 @@ export const Combobox = ({
           role="combobox"
           aria-expanded={open}
           className="w-[200px] justify-between"
+          disabled={disabled}
         >
           {value
             ? options.find((option) => option.value === value)?.label

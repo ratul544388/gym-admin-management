@@ -10,20 +10,25 @@ const Page = async ({ searchParams }: { searchParams: SearchParamsType }) => {
   const { page } = await searchParams;
   const skip = getSkip(page);
 
-  console.log({ page });
+  // const status: StatusType = (
+  //   await searchParams
+  // ).status.toUpperCase();
 
-  const lockers = await db.locker.findMany({
-    include: {
-      members: {
-        take: 1,
-        orderBy: {
-          lockerStartDate: "desc",
+  const [lockers, totalLockers] = await Promise.all([
+    db.locker.findMany({
+      include: {
+        members: {
+          take: 1,
+          orderBy: {
+            lockerStartDate: "desc",
+          },
         },
       },
-    },
-    take: VIEW_PER_PAGE,
-    skip,
-  });
+      take: VIEW_PER_PAGE,
+      skip,
+    }),
+    db.locker.count(),
+  ]);
 
   return (
     <div>
@@ -31,10 +36,9 @@ const Page = async ({ searchParams }: { searchParams: SearchParamsType }) => {
       <DataTable
         columns={columns}
         data={lockers}
-        deleteModalType="deleteLockerModal"
         searchInputPlaceholder="Search lockers..."
         showSearchInput
-        totalPages={15}
+        dataCount={totalLockers}
       />
     </div>
   );

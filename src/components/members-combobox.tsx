@@ -17,13 +17,19 @@ import {
 } from "./ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import UserAvatar from "./user-avatar";
+import { Loader } from "./loader";
 
 interface ComboboxProps {
   memberId?: string;
   onChange: (memberId: string) => void;
+  disabled?: boolean;
 }
 
-export const MemberCombobox = ({ memberId, onChange }: ComboboxProps) => {
+export const MemberCombobox = ({
+  memberId,
+  onChange,
+  disabled,
+}: ComboboxProps) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [memberSearchQuery, setMemberSearchQuery] = useState("");
@@ -37,22 +43,27 @@ export const MemberCombobox = ({ memberId, onChange }: ComboboxProps) => {
 
   const getFormattedOption = (memberId: string) => {
     const member = members?.find((member) => member.id === memberId);
-    if (!member) return null; // Just return null if no member is found
+    if (!member) return null;
     return (
       <span className="flex items-center gap-3">
-        <UserAvatar avatarUrl={member?.imageUrl} />
+        <UserAvatar src={member?.imageUrl} alt={member.name} className="size-8"/>
         <span className="ml-2">{member?.name}</span>
       </span>
     );
   };
 
-  // Handle invalid memberId during the user interaction (e.g., opening the dropdown)
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
-    if (isOpen && memberId && !members?.find((member) => member.id === memberId)) {
-      onChange(""); // Clear the memberId if it's invalid
+    if (
+      isOpen &&
+      memberId &&
+      !members?.find((member) => member.id === memberId)
+    ) {
+      onChange("");
     }
   };
+
+  console.log(isLoading)
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
@@ -62,8 +73,11 @@ export const MemberCombobox = ({ memberId, onChange }: ComboboxProps) => {
           role="combobox"
           aria-expanded={open}
           className="w-[200px] justify-between"
+          disabled={disabled || isLoading}
         >
-          {memberId ? getFormattedOption(memberId) || "Select Member" : "Select Member"}
+          {memberId
+            ? getFormattedOption(memberId) || "Select Member"
+            : "Select Member"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -71,11 +85,11 @@ export const MemberCombobox = ({ memberId, onChange }: ComboboxProps) => {
         <Command>
           <CommandInput
             onValueChange={setMemberSearchQuery}
-            placeholder="Search by ID or Name or Phone"
+            placeholder="Search by ID or Name"
           />
-          {isLoading && "Loading..."}
+          {isLoading && <Loader size={28} className="mx-auto mt-3"/>}
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
+            {!isLoading && <CommandEmpty>No results found.</CommandEmpty>}
             <CommandGroup>
               {members?.map((m) => {
                 const fullValue = `${m.id}|${m.name}|${m.phone}`;
@@ -92,7 +106,7 @@ export const MemberCombobox = ({ memberId, onChange }: ComboboxProps) => {
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value === fullValue ? "opacity-100" : "opacity-0"
+                        value === fullValue ? "opacity-100" : "opacity-0",
                       )}
                     />
                     {getFormattedOption(m.id)}

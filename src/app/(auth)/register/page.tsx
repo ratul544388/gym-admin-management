@@ -31,13 +31,13 @@ const RegisterPage = () => {
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof registerSchema>) {
     startTransition(() => {
       register(values).then(({ success, error }) => {
@@ -56,6 +56,19 @@ const RegisterPage = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
         <FormCard className="mx-auto w-full max-w-md">
           <h2 className="text-lg font-semibold">Create an Account</h2>
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input autoFocus placeholder="Enter Your Name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="email"

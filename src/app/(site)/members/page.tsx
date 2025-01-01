@@ -71,16 +71,13 @@ export default async function MembersPage({
       ? {
           OR: [
             {
-              memberId: q,
-            },
-            {
-              name: {
+              memberId: {
                 contains: q,
                 mode: "insensitive",
               },
             },
             {
-              phone: {
+              name: {
                 contains: q,
                 mode: "insensitive",
               },
@@ -125,7 +122,6 @@ export default async function MembersPage({
     getTotalMembers(where),
   ]);
 
-  const totalPages = Math.ceil(totalMembers / VIEW_PER_PAGE);
 
   return (
     <div>
@@ -134,8 +130,8 @@ export default async function MembersPage({
         columns={columns}
         data={members}
         showSearchInput
-        deleteModalType="deleteMemberModal"
-        totalPages={totalPages}
+        dataCount={totalMembers}
+        searchInputPlaceholder="Search by member ID or Name"
       />
     </div>
   );
