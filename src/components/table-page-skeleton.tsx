@@ -15,7 +15,7 @@ export const TablePageSkeleton = ({
         <Skeleton className="ml-auto h-10 w-20" />
       </div>
       {showSearchInput && (
-        <div className="mt-4 flex h-10 w-full max-w-[340px] items-center bg-background px-3 rounded-md">
+        <div className="mt-4 flex h-10 w-full max-w-[340px] items-center rounded-md bg-background px-3">
           <Skeleton className="h-5 w-40" />
         </div>
       )}
@@ -38,9 +38,15 @@ export const TablePageSkeleton = ({
 
 const Row = ({ isHeader }: { isHeader?: boolean }) => {
   return (
-    <div className={cn("flex gap-7 p-3", isHeader && "border-b")}>
+    <div className={cn("flex gap-7 border-b p-5", isHeader && "py-2")}>
       {Array.from({ length: 8 }).map((_, i) => (
-        <Skeleton key={i} className="h-7 min-w-20 lg:min-w-28 xl:min-w-32" />
+        <Skeleton
+          key={i}
+          className={cn(
+            "h-7 min-w-24 lg:min-w-32 xl:min-w-40",
+            i === 0 && "h-8 min-w-8 rounded-full lg:min-w-8 xl:min-w-8",
+          )}
+        />
       ))}
     </div>
   );

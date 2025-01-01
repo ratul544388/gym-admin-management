@@ -15,6 +15,6 @@ export const Container = ({
   elem: Elem = "div",
 }: ContainerProps) => {
   return (
-    <Elem className={cn("px-3 sm:px-4 md:px-6 max-w-screen-2xl mx-auto", className)}>{children}</Elem>
+    <Elem className={cn("px-3 sm:px-4 md:px-6 max-w-[1800px] mx-auto", className)}>{children}</Elem>
   );
 };
