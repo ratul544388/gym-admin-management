@@ -4,16 +4,9 @@ import { redirect } from "next/navigation";
 import { CreateMemberForm } from "../_components/create-member-form";
 
 const AddNewMemberPage = async () => {
-  const [defaultValues, membershipPlans, lockers] = await Promise.all([
+  const [defaultValues, membershipPlans] = await Promise.all([
     db.default.findFirst(),
     db.membershipPlan.findMany(),
-    db.locker.findMany({
-      where: {
-        members: {
-          none: {},
-        },
-      },
-    }),
   ]);
 
   await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -27,7 +20,6 @@ const AddNewMemberPage = async () => {
       <PageHeader label="Add a new Member" showBackButton />
       <CreateMemberForm
         membershipPlans={membershipPlans}
-        lockers={lockers}
         admissionFee={defaultValues?.admissionFee}
       />
     </div>

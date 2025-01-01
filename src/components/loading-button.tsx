@@ -16,7 +16,7 @@ export const LoadingButton = forwardRef<
       {...props}
       ref={ref}
     >
-      <Loader className={cn("abs-center hidden", isLoading && "block")} />
+      <Loader className={cn("abs-center hidden text-white", isLoading && "block")} />
       <span className={cn(isLoading && "text-transparent")}>{children}</span>
     </Button>
   );

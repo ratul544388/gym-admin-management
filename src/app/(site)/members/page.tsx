@@ -6,7 +6,6 @@ import { getSkip } from "@/lib/utils";
 import { SearchParamsType, StatusType } from "@/types";
 import { Gender, Prisma } from "@prisma/client";
 import { columns } from "./_components/columns";
-import { TablePageSkeleton } from "@/components/table-page-skeleton";
 
 const getMembers = async ({
   where,
@@ -122,8 +121,6 @@ export default async function MembersPage({
     getMembers({ where, skip }),
     getTotalMembers(where),
   ]);
-
-  return <TablePageSkeleton/>
 
   return (
     <div>

@@ -10,7 +10,7 @@ interface LoaderProps {
 
 export const Loader = ({ className, size = 40 }: LoaderProps) => {
   return (
-    <div className={cn("text-primary", className)}>
+    <div className={cn('text-primary', className)}>
       <Loader2 className="animate-spin" size={size} />
     </div>
   );

@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { getAvailableLockers } from "@/actions/lockers";
 import { createMember } from "@/actions/members";
 import { DatePicker } from "@/components/date-picker";
 import { FormCard } from "@/components/form-card";
@@ -33,25 +34,26 @@ import { Label } from "@/components/ui/label";
 import { DEFAULT_ADMISSION_FEE } from "@/constants";
 import { capitalize, formatDate, getEndDate } from "@/lib/utils";
 import { createMemberSchema } from "@/schemas";
-import { Gender, Locker, MembershipPlan } from "@prisma/client";
+import { Gender, MembershipPlan } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
 import { Minus, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
+import { Loader } from "@/components/loader";
 
 export const CreateMemberForm = ({
   membershipPlans,
-  lockers,
   admissionFee = DEFAULT_ADMISSION_FEE,
 }: {
   membershipPlans?: MembershipPlan[];
-  lockers: Locker[];
   admissionFee?: number;
 }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [lockerDurationInMonth, setLockerDurationInMonth] = useState(1);
   const [isImageUploading, setIsImageUploading] = useState(false);
+  const [isCheckedLocker, setIsCheckedLocker] = useState(false);
   const [modifiedTotalCost, setModifiedTotalCost] = useState<
     number | undefined
   >();
@@ -72,6 +74,12 @@ export const CreateMemberForm = ({
       lockerId: "",
       lockerStartDate: undefined,
     },
+  });
+
+  const { data: lockers, isPending: isFetchingLockers } = useQuery({
+    queryKey: ["availableLockers"],
+    queryFn: async () => await getAvailableLockers(),
+    enabled: isCheckedLocker,
   });
 
   // 2. Define a submit handler.
@@ -100,14 +108,13 @@ export const CreateMemberForm = ({
   const lockerStartDate = form.getValues("lockerStartDate");
   const membershipPlanId = form.getValues("membershipPlanId");
   const lockerId = form.getValues("lockerId");
-  const [isCheckedLocker, setIsCheckedLocker] = useState(false);
 
   const selectedMembershipPlan = useMemo(() => {
     return membershipPlans?.find((plan) => plan.id === membershipPlanId);
   }, [membershipPlanId, membershipPlans]);
 
   const selectedLocker = useMemo(() => {
-    return lockers.find((locker) => locker.id === lockerId);
+    return lockers?.find((locker) => locker.id === lockerId);
   }, [lockers, lockerId]);
 
   const membershipPlanEndDate = useMemo(() => {
@@ -158,8 +165,6 @@ export const CreateMemberForm = ({
     setModifiedTotalCost(undefined);
     setModifiedLockerCost(undefined);
   };
-
-  console.log({ lockerCost, totalCost });
 
   return (
     <Form {...form}>
@@ -373,6 +378,12 @@ export const CreateMemberForm = ({
                           <SelectValue placeholder="Select a Locker" />
                         </SelectTrigger>
                         <SelectContent>
+                          {isFetchingLockers && (
+                            <Loader
+                              className="mx-auto my-3 text-primary"
+                              size={28}
+                            />
+                          )}
                           {lockers?.map(({ lockerNo, id }) => {
                             return (
                               <SelectItem value={id} key={id}>
