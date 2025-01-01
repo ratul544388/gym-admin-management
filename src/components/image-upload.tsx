@@ -94,9 +94,9 @@ export const ImageUpload = ({
           <ImagePlus className="size-6" />
         </Label>
       </Button>
-      {!!!uploadProgress && (
+      {!!uploadProgress && (
         <CircularProgressbar
-          value={100}
+          value={uploadProgress}
           className="absolute top-1/2 -translate-y-1/2 size-12"
           styles={buildStyles({
             pathColor: "hsl(var(--primary))",
