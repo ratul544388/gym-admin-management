@@ -1,10 +1,6 @@
 import { PageHeader } from "@/components/page-header";
-import React from "react";
-import { AddmissionFeeForm } from "./_components/addmission-fee-form";
 import { db } from "@/lib/db";
-import { ChevronDown } from "lucide-react";
-import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { AddmissionFeeForm } from "./_components/addmission-fee-form";
 
 const SettingsPage = async () => {
   const defaultValues = await db.default.findFirst({
@@ -16,17 +12,6 @@ const SettingsPage = async () => {
       <div className="rounded-md bg-background p-5">
         <AddmissionFeeForm admissionFee={defaultValues?.admissionFee} />
       </div>
-      <Link
-        href="/settings/users"
-        className={buttonVariants({
-          variant: "ghost",
-          className:
-            "w-full justify-between bg-background text-base font-normal",
-        })}
-      >
-        Users
-        <ChevronDown />
-      </Link>
     </div>
   );
 };

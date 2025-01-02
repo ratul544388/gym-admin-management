@@ -25,6 +25,9 @@ const getMembers = async ({
     },
     take: VIEW_PER_PAGE,
     skip,
+    orderBy: {
+      createdAt: "desc",
+    }
   });
 
   return members;

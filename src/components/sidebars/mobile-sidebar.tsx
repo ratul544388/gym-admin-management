@@ -16,7 +16,7 @@ import { NavItems } from "./nav-items";
 export const MobileSidebar = ({currentUser} : {currentUser: CurrentUser}) => {
   const [open, setOpen] = useState(false);
 
-  if (!currentUser) return null;
+  if (currentUser?.role !== "ADMIN") return null;
 
   const handleClose = () => {
     setOpen(false);

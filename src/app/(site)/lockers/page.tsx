@@ -9,11 +9,7 @@ import { columns } from "./_components/columns";
 const Page = async ({ searchParams }: { searchParams: SearchParamsType }) => {
   const { page } = await searchParams;
   const skip = getSkip(page);
-
-  // const status: StatusType = (
-  //   await searchParams
-  // ).status.toUpperCase();
-
+  
   const [lockers, totalLockers] = await Promise.all([
     db.locker.findMany({
       include: {

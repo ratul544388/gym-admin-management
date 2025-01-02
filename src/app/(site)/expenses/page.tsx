@@ -26,6 +26,7 @@ const ExpensesPage = async ({
       where,
       take: VIEW_PER_PAGE,
       skip,
+      orderBy: { createdAt: "desc" },
     }),
     db.expense.count({ where }),
   ]);

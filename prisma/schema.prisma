@@ -116,6 +116,8 @@ model Locker {
     price       Int
     isAvailable Boolean @default(true)
 
+    createdAt DateTime @default(now())
+
     members Member[]
 }
 

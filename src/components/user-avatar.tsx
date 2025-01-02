@@ -5,7 +5,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 interface UserAvatarProps {
   src: string | null | undefined;
   alt: string | null | undefined;
-  size?: number;
   className?: string;
 }
 

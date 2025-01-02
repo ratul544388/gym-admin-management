@@ -15,13 +15,22 @@ export const getAvailableLockers = async () => {
   return lockers;
 };
 
+// const checkAdmin = async () => {
+//   const currentUser = await getCurrentUser();
+//   if(!currentUser || currentUser.role !== "ADMIN"){
+//     console.log("This is triggred")
+//     throw new Error("You are not authorized to perform this action");
+//   }
+// }
+
 export const createLocker = async (values: z.infer<typeof lockerSchema>) => {
-  console.log(values);
   try {
     const validatedFields = lockerSchema.safeParse(values);
     if (!validatedFields.success) {
       return { error: "Invalid fields" };
     }
+
+    // await checkAdmin();
 
     await db.locker.create({
       data: values,
