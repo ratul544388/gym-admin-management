@@ -77,6 +77,7 @@ export const AssignLockerForm = ({
   const { data: lockers, isPending: isFetchingLockers } = useQuery({
     queryKey: ["availableLockers"],
     queryFn: async () => await getAvailableLockers(),
+    staleTime: 1000 * 10,
   });
 
   const selectedMemberId = form.getValues("memberId");

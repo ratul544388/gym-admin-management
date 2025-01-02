@@ -12,10 +12,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
+import { InvalidateQueryFilters, useQueryClient } from "@tanstack/react-query";
 
 export const DeleteLockerModal = () => {
   const { isOpen, type, onClose, data } = useModalStore();
   const [isPending, startTransition] = useTransition();
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   const handleDelete = async () => {
@@ -25,6 +27,7 @@ export const DeleteLockerModal = () => {
           toast.success(success);
           onClose();
           router.refresh();
+          queryClient.invalidateQueries(["availableLockers"] as InvalidateQueryFilters)
         } else {
           toast.error(error);
         }

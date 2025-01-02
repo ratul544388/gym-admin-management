@@ -1,12 +1,10 @@
-"use client";
-
 import { Container } from "@/components/container";
 import { buttonVariants } from "@/components/ui/button";
-import { useCurrentUser } from "@/hooks/use-current-user";
+import { getCurrentUser } from "@/lib/get-current-user";
 import Link from "next/link";
 
-const Page = () => {
-  const currentUser = useCurrentUser();
+const Page = async () => {
+  const currentUser = await getCurrentUser();
   return (
     <Container
       elem="main"

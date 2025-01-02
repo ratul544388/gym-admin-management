@@ -39,6 +39,7 @@ export const MemberCombobox = ({
     queryKey: ["memberSearchOnLockerForm", debouncedValue],
     queryFn: async () => await searchMembersForLocker(memberSearchQuery),
     enabled: !!memberSearchQuery || !!memberId,
+    staleTime: 1000 * 10,
   });
 
   const getFormattedOption = (memberId: string) => {
