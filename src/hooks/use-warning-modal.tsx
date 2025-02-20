@@ -53,7 +53,7 @@ export const useWarningModal = ({
 
     return (
       <Dialog open={openModal} onOpenChange={handleClose}>
-        <DialogContent className="p-0">
+        <DialogContent style={{width: "90vw"}} className="p-0 rounded-lg">
           <DialogHeader className="p-5">
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription className="text-destructive">
@@ -61,7 +61,9 @@ export const useWarningModal = ({
             </DialogDescription>
           </DialogHeader>
           <FormError />
-          <DialogFooter className="bg-destructive/20 p-5 rounded-t-xl">
+          <DialogFooter
+            className="p-5 py-3 rounded-t-xl"
+          >
             <Button
               variant="outline"
               disabled={isPending}
