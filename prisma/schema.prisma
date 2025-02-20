@@ -1,0 +1,102 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+model Member {
+    id       String  @id @default(auto()) @map("_id") @db.ObjectId
+    memberId Int  @unique
+    name     String
+    phone    String?
+    address  String?
+    age      Int?
+    gender   Gender?
+    image    String?
+
+    startDate DateTime
+    endDate   DateTime
+
+    lockerStartDate DateTime?
+    lockerEndDate   DateTime?
+
+    costRecords CostRecord[]
+
+    createdAt DateTime @default(now())
+
+    membershipPlan   MembershipPlan @relation(fields: [membershipPlanId], references: [id])
+    membershipPlanId String         @db.ObjectId
+
+    locker   Locker? @relation(fields: [lockerId], references: [id])
+    lockerId String? @db.ObjectId
+
+    isMembershipPlanRenewed Boolean @default(false)
+    isLockerRenewed         Boolean @default(false)
+}
+
+model CostRecord {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    cost Int
+
+    type CostType
+
+    createdAt DateTime @default(now())
+
+    member   Member? @relation(fields: [memberId], references: [id])
+    memberId String? @db.ObjectId
+}
+
+model MembershipPlan {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    name            String @unique
+    durationInMonth Int    @unique
+    price           Int    @unique
+
+    members Member[]
+}
+
+model Locker {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    lockerNo    Int     @unique
+    price       Int
+    isAvailable Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    members Member[]
+}
+
+model Expense {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    title     String
+    cost      Int
+    createdAt DateTime @default(now())
+}
+
+enum Gender {
+    MALE
+    FEMALE
+}
+
+enum CostType {
+    MEMBERSHIP_PLAN
+    RENEW_MEMBERSHIP_PLAN
+    LOCKER
+}
+
+enum Role {
+    ADMIN
+    USER
+}
+
+model Default {
+    id           String @id @default(auto()) @map("_id") @db.ObjectId
+    admissionFee Int    @default(500)
+}
