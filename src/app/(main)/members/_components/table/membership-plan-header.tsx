@@ -16,7 +16,6 @@ export const MembershipPlanHeader = () => {
     "membership_plan"
   ) as StatusType;
 
-  console.log(activeMembershipPlan);
 
   const { data: membershipPlans } = useQuery({
     queryKey: ["membership-plans"],

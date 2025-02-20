@@ -23,11 +23,9 @@ export const SearchInput = ({
   const [debouncedValue] = useDebounceValue(value, 400);
 
   useEffect(() => {
-    console.log("Trigger......1");
     if (isInitialRender) {
       return setIsInitialRender(false);
     }
-    console.log("Trigger......2");
     setQueryParams({ query: { q: debouncedValue ? debouncedValue : "" } });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);

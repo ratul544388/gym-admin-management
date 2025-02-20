@@ -1,12 +1,16 @@
 "use server";
 
 import { db } from "@/lib/db";
+import { isAdmin } from "@/lib/is-admin";
 import { ExpenseSchema, ExpenseValues } from "@/validations";
 
 export const createExpense = async (values: ExpenseValues) => {
-  console.log(values);
   try {
     ExpenseSchema.parse(values);
+
+    if (!(await isAdmin())) {
+      return { error: "Unauthorized" };
+    }
 
     await db.expense.create({
       data: values,
@@ -26,9 +30,12 @@ export const updateExpense = async ({
   values: ExpenseValues;
   id: string;
 }) => {
-  console.log(values);
   try {
     ExpenseSchema.parse(values);
+
+    if (!(await isAdmin())) {
+      return { error: "Unauthorized" };
+    }
 
     await db.expense.update({
       where: {
@@ -46,6 +53,9 @@ export const updateExpense = async ({
 
 export const deleteExpenses = async (ids: string[]) => {
   try {
+    if (!(await isAdmin())) {
+      return { error: "Unauthorized" };
+    }
     await db.expense.deleteMany({
       where: {
         id: {

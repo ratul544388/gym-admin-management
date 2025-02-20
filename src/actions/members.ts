@@ -1,5 +1,6 @@
 "use server";
 
+import { adminEmails } from "@/constants";
 import { db } from "@/lib/db";
 import { isAdmin } from "@/lib/is-admin";
 import {
@@ -8,6 +9,7 @@ import {
   RenewMemberSchema,
   RenewMemberValues,
 } from "@/validations";
+import { currentUser } from "@clerk/nextjs/server";
 import { Prisma } from "@prisma/client";
 
 export const createMember = async ({
@@ -22,7 +24,12 @@ export const createMember = async ({
   try {
     MemberSchema.parse(values);
 
-    if (!isAdmin()) {
+    const user = await currentUser();
+
+    const isAdmin =
+      !!user && adminEmails.includes(user.emailAddresses[0].emailAddress);
+
+    if (!isAdmin) {
       return { error: "Unauthorized" };
     }
 
@@ -65,7 +72,7 @@ export const updateMember = async ({
     const { name, memberId, phone, gender, age, address } =
       MemberSchema.parse(values);
 
-    if (!isAdmin()) {
+    if (!(await isAdmin())) {
       return { error: "Unauthorized" };
     }
 
@@ -92,7 +99,7 @@ export const updateMember = async ({
 
 export const deleteMembers = async (ids: string[]) => {
   try {
-    if (!isAdmin()) {
+    if (!(await isAdmin())) {
       return { error: "Unauthorized" };
     }
     await db.member.deleteMany({
@@ -126,7 +133,7 @@ export const renewMembershipPlan = async ({
   const { membershipPlanId, startDate: startDate } = values;
 
   try {
-    if (!isAdmin()) {
+    if (!(await isAdmin())) {
       return { error: "Unauthorized" };
     }
 

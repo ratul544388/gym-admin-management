@@ -6,9 +6,12 @@ export const useFormError = () => {
   const [error, setError] = useState<string | undefined>();
   const FormError = ({ className }: { className?: string }) => (
     <div
-      style={{ paddingInline: 20 }}
+      style={{
+        paddingInline: 20,
+        backgroundColor: "hsl(var(--destructive) / 0.2)",
+      }}
       className={cn(
-        "flex justify-center bg-destructive/20 rounded-md items-center gap-3 text-sm font-medium text-center py-2 px-5",
+        "flex justify-center rounded-md items-center gap-3 text-sm font-medium text-center py-2 px-5",
         !error && "hidden",
         className
       )}

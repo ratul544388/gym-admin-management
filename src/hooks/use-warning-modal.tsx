@@ -26,7 +26,6 @@ export const useWarningModal = ({
   onSuccess,
 }: WarningModalProps) => {
   const [openModal, setOpenModal] = useState(false);
-  console.log(openModal);
   const { setError, FormError } = useFormError();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();

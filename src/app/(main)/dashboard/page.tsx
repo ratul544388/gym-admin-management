@@ -4,6 +4,13 @@ import { cn, formatPrice } from "@/lib/utils";
 import { endOfMonth, startOfMonth } from "date-fns";
 import { getRevenueVsExpenseChartData } from "@/actions/charts";
 import { RevenueVsExpenseChart } from "./revenue-vs-expense-chart";
+import { Metadata } from "next";
+
+export const generateMetadata = (): Metadata => {
+  return {
+    title: "Dashbaord",
+  };
+};
 
 const DashboardPage = async () => {
   const today = new Date();

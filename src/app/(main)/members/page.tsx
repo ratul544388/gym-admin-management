@@ -6,6 +6,7 @@ import { getSkip } from "@/lib/utils";
 import { SearchParamsType, StatusType } from "@/types";
 import { Gender, Prisma } from "@prisma/client";
 import { columns } from "./_components/table/columns";
+import { Metadata } from "next";
 
 const getMembers = async ({
   where,
@@ -38,6 +39,12 @@ const getTotalMembers = async (where: Prisma.MemberWhereInput) => {
     where,
   });
   return totalMembers;
+};
+
+export const generateMetadata = (): Metadata => {
+  return {
+    title: "Members",
+  };
 };
 
 export default async function MembersPage({
@@ -129,13 +136,13 @@ export default async function MembersPage({
   return (
     <div className="space-y-4">
       <PageHeader label="Members" actionUrl="/members/new" />
-        <DataTable
-          columns={columns}
-          data={members}
-          pagesDataCount={totalMembers}
-          showSearchInput
-          searchInputPlaceholder="Search members by Name or ID"
-        />
+      <DataTable
+        columns={columns}
+        data={members}
+        pagesDataCount={totalMembers}
+        showSearchInput
+        searchInputPlaceholder="Search members by Name or ID"
+      />
     </div>
   );
 }

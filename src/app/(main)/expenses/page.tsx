@@ -6,6 +6,13 @@ import { getSkip } from "@/lib/utils";
 import { SearchParamsType } from "@/types";
 import { Prisma } from "@prisma/client";
 import { columns } from "./_components/table/columns";
+import { Metadata } from "next";
+
+export const generateMetadata = (): Metadata => {
+  return {
+    title: "Expenses",
+  };
+};
 
 const ExpensesPage = async ({
   searchParams,

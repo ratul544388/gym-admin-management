@@ -1,8 +1,8 @@
 "use server";
 
 import { db } from "@/lib/db";
+import { isAdmin } from "@/lib/is-admin";
 import { MembershipPlanSchema, MembershipPlanValues } from "@/validations";
-import { currentUser } from "@clerk/nextjs/server";
 import { Prisma } from "@prisma/client";
 import * as z from "zod";
 
@@ -33,10 +33,9 @@ export const getMembershipPlans = async () => {
 export const createMembershipPlan = async (values: MembershipPlanValues) => {
   try {
     MembershipPlanSchema.parse(values);
-    const user = await currentUser();
 
-    if (!user) {
-      return { error: "Unauthenticated" };
+    if (!(await isAdmin())) {
+      return { error: "Unauthorized" };
     }
 
     await db.membershipPlan.create({
@@ -66,9 +65,10 @@ export const updateMembershipPlan = async ({
   membershipPlanId: string;
 }) => {
   try {
-    const validatedFields = MembershipPlanSchema.safeParse(values);
-    if (!validatedFields.success) {
-      return { error: "Invalid fields" };
+    MembershipPlanSchema.parse(values);
+
+    if (!(await isAdmin())) {
+      return { error: "Unauthorized" };
     }
 
     await db.membershipPlan.update({
@@ -95,6 +95,9 @@ export const updateMembershipPlan = async ({
 
 export const deleteMembershipPlans = async (ids: string[]) => {
   try {
+    if (!(await isAdmin())) {
+      return { error: "Unauthorized" };
+    }
     const memberExist = await db.membershipPlan.findFirst({
       where: {
         members: {

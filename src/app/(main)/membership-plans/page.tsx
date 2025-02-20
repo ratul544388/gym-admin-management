@@ -3,6 +3,13 @@ import { db } from "@/lib/db";
 import { columns } from "./_components/table/columns";
 import { DataTable } from "@/components/data-table";
 import { Suspense } from "react";
+import { Metadata } from "next";
+
+export const generateMetadata = (): Metadata => {
+  return {
+    title: "Membership Plans",
+  };
+};
 
 const MembershipPlansPage = async () => {
   const memebershipPlans = await db.membershipPlan.findMany();
