@@ -15,7 +15,7 @@ export const Header = () => {
         <Logo className="" />
         <div className="ml-auto flex items-center gap-3">
           <ThemeToggler />
-          {isLoaded ? <UserButton afterSwitchSessionUrl="/sign-in" /> : <Skeleton className="size-[28px] rounded-full"/>}
+          {isLoaded ? <UserButton /> : <Skeleton className="size-[28px] rounded-full"/>}
         </div>
       </Container>
     </header>
