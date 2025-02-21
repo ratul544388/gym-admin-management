@@ -13,7 +13,7 @@ export const Header = () => {
         <Logo className="" />
         <div className="ml-auto flex items-center gap-3">
           <ThemeToggler />
-          <UserButton />
+          <UserButton afterSwitchSessionUrl="/sign-in" />
         </div>
       </Container>
     </header>

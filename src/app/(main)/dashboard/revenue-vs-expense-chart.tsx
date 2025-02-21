@@ -1,7 +1,7 @@
 "use client";
 
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { TrendingUp } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import {
   Card,
@@ -10,14 +10,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
-import { ExpenseVsRevenueChartType } from "@/types"
+} from "@/components/ui/chart";
+import { ExpenseVsRevenueChartType } from "@/types";
 
 const chartConfig = {
   Revenue: {
@@ -28,14 +28,20 @@ const chartConfig = {
     label: "Expenses",
     color: "hsl(var(--chart-2))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-export function RevenueVsExpenseChart({chartData} : {chartData: ExpenseVsRevenueChartType}) {
+export function RevenueVsExpenseChart({
+  chartData,
+}: {
+  chartData: ExpenseVsRevenueChartType;
+}) {
   return (
     <Card className="mt-8">
       <CardHeader>
         <CardTitle>Bar Chart - Multiple</CardTitle>
-        <CardDescription>January - December 2026</CardDescription>
+        <CardDescription>{`January - December ${
+          new Date().getFullYear() + 1
+        }`}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -66,5 +72,5 @@ export function RevenueVsExpenseChart({chartData} : {chartData: ExpenseVsRevenue
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }
