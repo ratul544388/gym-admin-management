@@ -111,7 +111,7 @@ const DashboardPage = async () => {
         {data.map(({ label, value }) => (
           <li
             key={label}
-            className={cn("rounded-md border bg-background p-5 shadow")}
+            className={cn("rounded-md border bg-background space-y-2 p-5 shadow")}
           >
             <h3 className="text-lg font-semibold">{label}</h3>
             <p className="text-2xl font-semibold text-primary">{value}</p>

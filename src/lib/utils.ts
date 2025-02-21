@@ -12,12 +12,12 @@ export const formatPrice = (price: number) => {
   return new Intl.NumberFormat("en-BD", {
     style: "currency",
     currency: "BDT",
+    currencyDisplay: "narrowSymbol",
   }).format(price);
 };
 
 export const formatDate = (date: Date) => {
   return format(date, "dd MMM yyyy");
-  // return format(date, "dd MMM yyyy - h:mm a");
 };
 
 export const capitalize = (text: string) => {
