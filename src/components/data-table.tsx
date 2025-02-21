@@ -16,13 +16,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useLoadingStore } from "@/hooks/use-loading-store";
-import { Loader, Loader2 } from "lucide-react";
+import { useQueryParams } from "@/hooks/use-query-params";
+import { Loader2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import React from "react";
 import { Pagination } from "./pagination";
 import { SearchInput } from "./search-input";
 import { Button } from "./ui/button";
-import { useQueryParams } from "@/hooks/use-query-params";
-import { useSearchParams } from "next/navigation";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
