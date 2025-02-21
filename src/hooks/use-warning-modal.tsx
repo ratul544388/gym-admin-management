@@ -56,7 +56,7 @@ export const useWarningModal = ({
         <DialogContent style={{width: "90vw"}} className="p-0 rounded-lg">
           <DialogHeader className="p-5">
             <DialogTitle>{title}</DialogTitle>
-            <DialogDescription className="text-destructive">
+            <DialogDescription>
               {description}
             </DialogDescription>
           </DialogHeader>
