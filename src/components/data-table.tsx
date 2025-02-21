@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useLoadingStore } from "@/hooks/use-loading-store";
-import { Loader } from "lucide-react";
+import { Loader, Loader2 } from "lucide-react";
 import React from "react";
 import { Pagination } from "./pagination";
 import { SearchInput } from "./search-input";
@@ -121,7 +121,7 @@ export function DataTable<TData, TValue>({
           </Table>
           {isLoading && (
             <div className="fixed inset-0 flex items-center justify-center bg-neutral-950/5 z-[9999]">
-              <Loader className="size-10 animate-spin" />
+              <Loader2 className="size-10 text-primary animate-spin" />
             </div>
           )}
         </div>
