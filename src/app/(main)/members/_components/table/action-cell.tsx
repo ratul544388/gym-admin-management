@@ -44,7 +44,7 @@ export const ActionCell = ({ member, table }: ActionCellProps) => {
     {
       label: "View Profile",
       icon: User2,
-      onClick: () => {},
+      onClick: () => router.push(`/members/profile/${member.id}`),
     },
     {
       label: "Edit Member",

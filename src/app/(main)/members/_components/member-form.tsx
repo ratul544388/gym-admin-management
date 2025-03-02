@@ -143,6 +143,7 @@ export const MemberForm = ({
                     placeholder="Enter member's ID"
                     value={field.value || ""}
                     onChange={field.onChange}
+                    disabled={isPending}
                   />
                 </FormControl>
                 <FormMessage />
@@ -156,7 +157,11 @@ export const MemberForm = ({
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter member's name" {...field} />
+                  <Input
+                    placeholder="Enter member's name"
+                    disabled={isPending}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -172,6 +177,7 @@ export const MemberForm = ({
                   <Input
                     type="number"
                     placeholder="Enter member's phone number"
+                    disabled={isPending}
                     {...field}
                   />
                 </FormControl>
@@ -186,7 +192,11 @@ export const MemberForm = ({
               <FormItem>
                 <FormLabel>Gender</FormLabel>
                 <FormControl>
-                  <Select defaultValue={field.value} onValueChange={field.onChange}>
+                  <Select
+                    disabled={isPending}
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                  >
                     <SelectTrigger
                       className={cn(
                         "text-muted-foreground",
@@ -218,6 +228,7 @@ export const MemberForm = ({
                 <FormLabel>Age</FormLabel>
                 <FormControl>
                   <Input
+                    disabled={isPending}
                     type="number"
                     placeholder="Enter member's age"
                     value={field.value || ""}
@@ -235,7 +246,11 @@ export const MemberForm = ({
               <FormItem>
                 <FormLabel>Address</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter member's address" {...field} />
+                  <Input
+                    disabled={isPending}
+                    placeholder="Enter member's address"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -252,6 +267,7 @@ export const MemberForm = ({
                     <FormLabel>Membership Plan</FormLabel>
                     <FormControl>
                       <Select
+                        disabled={isPending}
                         defaultValue={membershipPlanId}
                         onValueChange={field.onChange}
                       >
@@ -292,6 +308,7 @@ export const MemberForm = ({
                       <FormLabel>Start Date</FormLabel>
                       <FormControl>
                         <DatePicker
+                          disabled={isPending}
                           value={field.value}
                           onChange={(value) => {
                             if (!membershipPlanId) {
@@ -341,7 +358,10 @@ export const MemberForm = ({
           {selectedMembershipPlan && !member && (
             <CostModifier value={cost} onChange={setModifiedCost} />
           )}
-          <LoadingButton isLoading={isPending} type="submit">
+          <LoadingButton
+            isLoading={isPending || isImageUploading}
+            type="submit"
+          >
             {member ? "Save" : "Create"}
           </LoadingButton>
         </FormCard>
