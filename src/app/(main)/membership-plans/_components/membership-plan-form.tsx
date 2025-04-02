@@ -21,7 +21,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
@@ -89,6 +89,7 @@ export const MembershipPlanForm = ({
                   <Input
                     autoFocus={!!!membershipPlan}
                     placeholder="Name"
+                    disabled={isPending}
                     {...field}
                   />
                 </FormControl>
@@ -106,6 +107,7 @@ export const MembershipPlanForm = ({
                   <Input
                     type="number"
                     placeholder="Duration In Month"
+                    disabled={isPending}
                     value={field.value || ""}
                     onChange={field.onChange}
                   />
@@ -126,6 +128,7 @@ export const MembershipPlanForm = ({
                     value={field.value || ""}
                     onChange={field.onChange}
                     placeholder="Price"
+                    disabled={isPending}
                   />
                 </FormControl>
                 <FormMessage />
@@ -133,10 +136,7 @@ export const MembershipPlanForm = ({
             )}
           />
           <FormError />
-          <LoadingButton
-            type="submit"
-            isLoading={isPending}
-          >
+          <LoadingButton type="submit" isLoading={isPending}>
             {membershipPlan ? "Update" : "Create"}
           </LoadingButton>
         </FormCard>
