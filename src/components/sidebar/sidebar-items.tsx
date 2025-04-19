@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface SidebarItemsProps {
   className?: string;
@@ -16,7 +17,7 @@ export const SidebarItems = ({ className, onClose }: SidebarItemsProps) => {
   return (
     <nav className={cn("mt-5", className)}>
       <ul>
-        {sidebarLinks.map(({ label, icon: Icon, href }) => {
+        {sidebarLinks.map(({ label, image, href }) => {
           const isActive = pathname === href;
           return (
             <li key={label}>
@@ -25,10 +26,11 @@ export const SidebarItems = ({ className, onClose }: SidebarItemsProps) => {
                 href={href}
                 className={cn(
                   "flex relative items-center gap-4 py-2.5 px-4 hover:bg-accent font-medium",
-                  isActive && "bg-accent"
+                  isActive &&
+                    "bg-primary/10 hover:bg-primary/20 text-primary font-semibold"
                 )}
               >
-                <Icon className="size-5 text-muted-foreground" />
+                <Image src={image} alt="Icon" width={20} height={20} />
                 {label}
                 {isActive && (
                   <motion.span

@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { capitalize, cn } from "@/lib/utils";
 import { DropdownMenuItemType } from "@/types";
 import { Check, ChevronDown } from "lucide-react";
 import { ReactNode, useState } from "react";
@@ -40,7 +40,15 @@ export const DropDownMenu = ({
       </PopoverTrigger>
       <PopoverContent align={align} className="flex w-full flex-col px-0 py-2">
         {items.map(
-          ({ label, destructive, icon: Icon, active, disabled, onClick }) => (
+          ({
+            label,
+            destructive,
+            icon: Icon,
+            active,
+            disabled,
+            onClick,
+            badge,
+          }) => (
             <Button
               onClick={() => {
                 onClick();
@@ -54,8 +62,18 @@ export const DropDownMenu = ({
               )}
               variant="ghost"
             >
+              {badge && (
+                <span
+                  className={cn(
+                    "size-5 rounded-full flex items-center justify-center text-xs font-medium bg-accent",
+                    badge.isPending && "animate-pulse"
+                  )}
+                >
+                  {badge.label}
+                </span>
+              )}
               {Icon && <Icon className="size-4" />}
-              {label}
+              {capitalize(label)}
               {active && <Check className="size-4 text-muted-foreground" />}
             </Button>
           )

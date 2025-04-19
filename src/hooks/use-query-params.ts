@@ -12,7 +12,7 @@ export const useQueryParams = () => {
   const setQueryParams = ({
     query,
     clearCurrentQuery,
-    toggleIfSame,
+    toggleIfSame = true,
     enableLoading = true,
   }: {
     query: Record<string, string | number>;
@@ -26,6 +26,7 @@ export const useQueryParams = () => {
     const currentQuery = clearCurrentQuery
       ? {}
       : qs.parse(searchParams.toString());
+
 
     if (toggleIfSame) {
       Object.entries(query).forEach(([key, value]) => {

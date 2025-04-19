@@ -6,12 +6,13 @@ import { NotProvided } from "@/components/not-provided";
 import { TableActionHeader } from "@/components/table-action-header";
 import { Checkbox } from "@/components/ui/checkbox";
 import UserAvatar from "@/components/user-avatar";
-import { capitalize, cn, formatDate, getStatus } from "@/lib/utils";
+import { capitalize, formatDate } from "@/lib/utils";
 import { FullMemberType } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { ActionCell } from "./action-cell";
 import { GenderHeader } from "./gender-header";
 import { MembershipPlanHeader } from "./membership-plan-header";
+import { StatusCell } from "./status-cell";
 import { StatusHeader } from "./status-header";
 
 export const columns: ColumnDef<FullMemberType>[] = [
@@ -92,29 +93,7 @@ export const columns: ColumnDef<FullMemberType>[] = [
   {
     accessorKey: "status",
     header: () => <StatusHeader />,
-    cell: ({ row }) => {
-      const {
-        startDate,
-        endDate,
-        isMembershipPlanRenewed: hasRenewed,
-      } = row.original;
-      const status = getStatus({ startDate, endDate, hasRenewed });
-
-      return (
-        <div
-          className={cn(
-            "text-white w-fit flex text-sm font-medium ml-4 py-[1px] px-3 rounded-full hover:opacity-90 transition-opacity",
-            status === "ACTIVE"
-              ? "bg-blue-500"
-              : status === "PENDING"
-              ? "bg-orange-500"
-              : "bg-destructive"
-          )}
-        >
-          {capitalize(status)}
-        </div>
-      );
-    },
+    cell: ({ row }) => <StatusCell member={row.original} />,
   },
   {
     accessorKey: "startDate",

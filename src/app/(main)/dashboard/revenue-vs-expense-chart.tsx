@@ -1,6 +1,5 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import {
@@ -26,7 +25,7 @@ const chartConfig = {
   },
   Expenses: {
     label: "Expenses",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--destructive))",
   },
 } satisfies ChartConfig;
 
@@ -35,13 +34,13 @@ export function RevenueVsExpenseChart({
 }: {
   chartData: ExpenseVsRevenueChartType;
 }) {
+
+
   return (
     <Card className="mt-8">
       <CardHeader>
-        <CardTitle>Bar Chart - Multiple</CardTitle>
-        <CardDescription>{`January - December ${
-          new Date().getFullYear() + 1
-        }`}</CardDescription>
+        <CardTitle>Bar Chart - Revenue Vs. Expense</CardTitle>
+        <CardDescription>January - December</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -59,16 +58,13 @@ export function RevenueVsExpenseChart({
               content={<ChartTooltipContent indicator="dashed" />}
             />
             <Bar dataKey="revenue" fill="hsl(var(--primary))" radius={4} />
-            <Bar dataKey="expenses" fill="hsl(var(--chart-2))" radius={4} />
+            <Bar dataKey="expenses" fill="hsl(var(--destructive))" radius={4} />
           </BarChart>
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Showing Revenue vs. Expense graph of this year
         </div>
       </CardFooter>
     </Card>

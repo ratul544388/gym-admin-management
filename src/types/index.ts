@@ -33,6 +33,7 @@ export type DropdownMenuItemType = {
   active?: boolean;
   onClick: () => void;
   destructive?: boolean;
+  badge?: { label?: string | number; isPending?: boolean };
 };
 
 export type FullMembershipPlanType = MembershipPlan & {
@@ -56,3 +57,5 @@ export type UserType = {
 };
 
 export type ActionReturnedType = Promise<{ success?: string; error?: string }>;
+
+export type Orderby = "asc" | "desc";

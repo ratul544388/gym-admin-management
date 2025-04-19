@@ -1,7 +1,6 @@
 import { Container } from "@/components/container";
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
-import { Toaster } from "@/components/ui/sonner";
 import { QueryProvider } from "@/providers/query-provider";
 import { ReactNode } from "react";
 
@@ -13,7 +12,6 @@ export default function MainLayout({ children }: { children: ReactNode }) {
         <Sidebar />
         <Container className="pb-20">{children}</Container>
       </main>
-      <Toaster />
     </QueryProvider>
   );
 }

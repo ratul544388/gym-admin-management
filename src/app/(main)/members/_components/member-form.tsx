@@ -32,6 +32,7 @@ import {
 } from "../../../../components/ui/select";
 import { FormCard } from "../../../../components/form-card";
 import { DatePicker } from "@/components/date-picker";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface MemberFormProps {
   member?: Member;
@@ -44,6 +45,7 @@ export const MemberForm = ({
   membershipPlans,
   admissionFee = 0,
 }: MemberFormProps) => {
+  const queryClient = useQueryClient();
   const [cost, setCost] = useState(0);
   const [modifiedCost, setModifiedCost] = useState(0);
   const [isImageUploading, setIsImageUploading] = useState(false);
@@ -94,6 +96,9 @@ export const MemberForm = ({
             toast.success(success);
             router.push("/members");
             router.refresh();
+            queryClient.invalidateQueries({
+              queryKey: ["membershipStatusCounts"],
+            });
           } else {
             setError(error);
           }
@@ -108,6 +113,9 @@ export const MemberForm = ({
             toast.success(success);
             router.push("/members");
             router.refresh();
+            queryClient.invalidateQueries({
+              queryKey: ["membershipStatusCounts"],
+            });
           } else {
             setError(error);
           }
@@ -115,6 +123,7 @@ export const MemberForm = ({
       }
     });
   };
+
 
   useEffect(() => {
     if (!selectedMembershipPlan) return;

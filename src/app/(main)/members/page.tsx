@@ -3,17 +3,20 @@ import { PageHeader } from "@/components/page-header";
 import { VIEW_PER_PAGE } from "@/constants";
 import { db } from "@/lib/db";
 import { getSkip } from "@/lib/utils";
-import { SearchParamsType, StatusType } from "@/types";
+import { Orderby, SearchParamsType, StatusType } from "@/types";
 import { Gender, Prisma } from "@prisma/client";
-import { columns } from "./_components/table/columns";
+import { endOfToday, startOfToday } from "date-fns";
 import { Metadata } from "next";
+import { columns } from "./_components/table/columns";
 
 const getMembers = async ({
   where,
   skip,
+  orderby,
 }: {
   where: Prisma.MemberWhereInput;
   skip: number;
+  orderby: Orderby;
 }) => {
   const members = await db.member.findMany({
     where,
@@ -27,7 +30,19 @@ const getMembers = async ({
     take: VIEW_PER_PAGE,
     skip,
     orderBy: {
-      createdAt: "desc",
+      ...(orderby
+        ? {
+            ...(orderby === "desc"
+              ? {
+                  endDate: "desc",
+                }
+              : {
+                  endDate: "asc",
+                }),
+          }
+        : {
+            createdAt: "desc",
+          }),
     },
   });
 
@@ -52,16 +67,18 @@ export default async function MembersPage({
 }: {
   searchParams: SearchParamsType;
 }) {
-  const page = (await searchParams).page || 1;
-  const q = (await searchParams).q as string;
-  const membershipPlan = (await searchParams).membership_plan as string;
-  const gender = (
-    (await searchParams).gender as string
-  )?.toUpperCase() as Gender;
+  const {
+    page = 1,
+    q,
+    membership_plan: membershipPlan,
+    gender: rowGender,
+    status: rowStatus,
+    orderby: rowOrderby,
+  } = await searchParams;
 
-  const status = (
-    (await searchParams).status as string
-  )?.toUpperCase() as StatusType;
+  const gender = rowGender?.toUpperCase() as Gender;
+  const status = rowStatus?.toUpperCase() as StatusType;
+  const orderby = rowOrderby as Orderby;
 
   const skip = getSkip(page);
 
@@ -110,26 +127,29 @@ export default async function MembersPage({
       ? {
           isMembershipPlanRenewed: false,
           startDate: {
-            gt: new Date(),
+            gt: startOfToday(),
           },
         }
       : status === "EXPIRED"
       ? {
           endDate: {
-            lt: new Date(),
+            lt: endOfToday(),
           },
         }
       : status === "ACTIVE"
       ? {
           endDate: {
-            gt: new Date(),
+            gt: startOfToday(),
+          },
+          startDate: {
+            lt: startOfToday(),
           },
         }
       : {}),
   };
 
   const [members, totalMembers] = await Promise.all([
-    getMembers({ where, skip }),
+    getMembers({ where, skip, orderby }),
     getTotalMembers(where),
   ]);
 
@@ -142,6 +162,7 @@ export default async function MembersPage({
         pagesDataCount={totalMembers}
         showSearchInput
         searchInputPlaceholder="Search members by Name or ID"
+        orderbyFilter
       />
     </div>
   );

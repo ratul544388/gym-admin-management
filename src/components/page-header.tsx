@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, PlusCircle } from "lucide-react";
 
 interface PageHeaderProps {
   className?: string;
@@ -25,7 +25,10 @@ export const PageHeader = ({
       {backButtonUrl && (
         <Link
           href={backButtonUrl}
-          className={cn(buttonVariants({ variant: "ghost", size: "icon" }), 'rounded-full mr-2')}
+          className={cn(
+            buttonVariants({ variant: "ghost", size: "icon" }),
+            "rounded-full mr-2"
+          )}
         >
           <ArrowLeft className="size-4" />
         </Link>
@@ -33,6 +36,7 @@ export const PageHeader = ({
       <h1 className="font-semibold text-xl">{label}</h1>
       {actionUrl && (
         <Link href={actionUrl} className={cn(buttonVariants(), "ml-auto")}>
+          <PlusCircle />
           {actionLabel}
         </Link>
       )}
