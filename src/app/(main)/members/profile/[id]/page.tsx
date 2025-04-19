@@ -2,7 +2,7 @@ import { PageHeader } from "@/components/page-header";
 import { buttonVariants } from "@/components/ui/button";
 import { placeholderImage } from "@/constants";
 import { db } from "@/lib/db";
-import { cn, formatDate } from "@/lib/utils";
+import { capitalize, cn, formatDate } from "@/lib/utils";
 import { ParamsType } from "@/types";
 import { Edit } from "lucide-react";
 import Image from "next/image";
@@ -46,7 +46,7 @@ const MemberProfilePage = async ({ params }: { params: ParamsType }) => {
   const data = {
     name,
     phone,
-    gender,
+    gender: capitalize(gender || "_"),
     address,
     age,
     createdAt: formatDate(createdAt),
@@ -60,12 +60,12 @@ const MemberProfilePage = async ({ params }: { params: ParamsType }) => {
       <PageHeader label="Member's Profile" backButtonUrl="/members" />
       <div className="rounded-lg border border-dashed bg-background p-5 shadow-md">
         <div className="flex justify-between">
-          <div className="relative size-48">
+          <div className="relative bg-accent border rounded-md overflow-hidden size-48">
             <Image
               src={image || placeholderImage}
               alt="Avatar"
               fill
-              className="rounded-md object-cover"
+              className="object-cover"
             />
           </div>
           <Link
@@ -86,7 +86,7 @@ const MemberProfilePage = async ({ params }: { params: ParamsType }) => {
               <p
                 className={cn("capitalize", !value && "text-muted-foreground")}
               >
-                {value || "N/A"}
+                {value || "_"}
               </p>
             </li>
           ))}
