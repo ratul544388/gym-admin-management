@@ -69,7 +69,7 @@ export const ExpenseForm = ({ expense }: ExpenseFormProps) => {
           <FormInput
             control={form.control}
             name="title"
-            autoFocus
+            autoFocus={!!expense}
             disabled={isPending}
           />
           <FormInput

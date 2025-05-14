@@ -75,7 +75,7 @@ export const MembershipPlanForm = ({
             control={form.control}
             name="name"
             disabled={isPending}
-            autoFocus
+            autoFocus={!!membershipPlan}
           />
           <FormInput
             control={form.control}
