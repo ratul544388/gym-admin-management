@@ -2,7 +2,7 @@ import React from "react";
 import { db } from "@/lib/db";
 import { ParamsType } from "@/types";
 import { PageHeader } from "@/components/page-header";
-import { RenewForm } from "../renew-form";
+import { RenewForm } from "./renew-form";
 import NotFound from "@/app/not-found";
 import { isValidObjectId } from "mongoose";
 

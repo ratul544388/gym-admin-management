@@ -1,8 +1,7 @@
 "use client";
 
-import { createMember, updateMember } from "@/actions/members";
 import { useFormError } from "@/hooks/use-form-error";
-import { capitalize, cn, formatDate, getEndDate } from "@/lib/utils";
+import { formatDate, getEndDate } from "@/lib/utils";
 import { MemberSchema, MemberValues } from "@/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Gender, Member, MembershipPlan } from "@prisma/client";
@@ -13,6 +12,9 @@ import { toast } from "sonner";
 import { CostModifier } from "../../../../components/cost-modifier";
 import { ImageUpload } from "../../../../components/image-upload";
 
+import { FormDatePicker } from "@/components/form-date-picker";
+import { FormInput } from "@/components/form-input";
+import { FormSelect } from "@/components/form-select";
 import {
   Form,
   FormControl,
@@ -21,18 +23,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { LoadingButton } from "../../../../components/loading-button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../../components/ui/select";
-import { FormCard } from "../../../../components/form-card";
-import { DatePicker } from "@/components/date-picker";
 import { useQueryClient } from "@tanstack/react-query";
+import { FormCard } from "../../../../components/form-card";
+import { LoadingButton } from "../../../../components/loading-button";
+import { createMember, updateMember } from "../actions";
 
 interface MemberFormProps {
   member?: Member;
@@ -48,7 +42,7 @@ export const MemberForm = ({
   const queryClient = useQueryClient();
   const [cost, setCost] = useState(0);
   const [modifiedCost, setModifiedCost] = useState(0);
-  const [isImageUploading, setIsImageUploading] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isPending, startTransition] = useTransition();
   const { FormError, setError } = useFormError();
   const router = useRouter();
@@ -77,10 +71,7 @@ export const MemberForm = ({
   const startDate = form.getValues("startDate");
   const endDate = useMemo(() => {
     if (startDate && selectedMembershipPlan) {
-      return getEndDate({
-        startDate: startDate,
-        durationInMonth: selectedMembershipPlan.durationInMonth,
-      });
+      return getEndDate(startDate, selectedMembershipPlan.durationInMonth);
     }
   }, [startDate, selectedMembershipPlan]);
 
@@ -124,7 +115,6 @@ export const MemberForm = ({
     });
   };
 
-
   useEffect(() => {
     if (!selectedMembershipPlan) return;
     if (modifiedCost) {
@@ -136,205 +126,65 @@ export const MemberForm = ({
 
   form.watch("membershipPlanId");
 
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormCard>
-          <FormField
+          <FormInput
             control={form.control}
             name="memberId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>ID</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Enter member's ID"
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="ID"
+            disabled={isPending}
+            autoFocus
+            type="number"
           />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter member's name"
-                    disabled={isPending}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
+          <FormInput control={form.control} name="name" disabled={isPending} />
+          <FormInput
             control={form.control}
             name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Enter member's phone number"
-                    disabled={isPending}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            disabled={isPending}
+            type="number"
           />
-          <FormField
+          <FormSelect
             control={form.control}
             name="gender"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Gender</FormLabel>
-                <FormControl>
-                  <Select
-                    disabled={isPending}
-                    defaultValue={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger
-                      className={cn(
-                        "text-muted-foreground",
-                        field.value && "text-foreground"
-                      )}
-                    >
-                      <SelectValue placeholder="Enter member's gender" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.values(Gender).map((item) => {
-                        return (
-                          <SelectItem value={item} key={item}>
-                            {capitalize(item)}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            options={Object.values(Gender).map((g) => g)}
+            disabled={isPending}
           />
-          <FormField
+          <FormInput
             control={form.control}
             name="age"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Age</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={isPending}
-                    type="number"
-                    placeholder="Enter member's age"
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            disabled={isPending}
+            type="number"
           />
-          <FormField
+          <FormInput
             control={form.control}
             name="address"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Address</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={isPending}
-                    placeholder="Enter member's address"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            disabled={isPending}
           />
           {!member && (
             <>
-              {" "}
-              <FormField
+              <FormSelect
                 control={form.control}
                 name="membershipPlanId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Membership Plan</FormLabel>
-                    <FormControl>
-                      <Select
-                        disabled={isPending}
-                        defaultValue={membershipPlanId}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className={cn(
-                            "text-muted-foreground",
-                            field.value && "text-foreground"
-                          )}
-                        >
-                          <SelectValue placeholder="Membership Plan" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {membershipPlans?.map(
-                            ({ name, id, durationInMonth }) => {
-                              const formattedName = `${name} - (${durationInMonth} ${
-                                durationInMonth > 1 ? "Months" : "Month"
-                              })`;
-                              return (
-                                <SelectItem value={id} key={id}>
-                                  {formattedName}
-                                </SelectItem>
-                              );
-                            }
-                          )}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                label="Membership Plan"
+                options={membershipPlans.map(
+                  ({ name, id, durationInMonth }) => {
+                    const formattedName = `${name} - ${durationInMonth > 1 ? "Months" : "Month"}`;
+                    return {
+                      label: formattedName,
+                      value: id,
+                    };
+                  },
                 )}
               />
               <div>
-                <FormField
+                <FormDatePicker
                   control={form.control}
                   name="startDate"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Start Date</FormLabel>
-                      <FormControl>
-                        <DatePicker
-                          disabled={isPending}
-                          value={field.value}
-                          onChange={(value) => {
-                            if (!membershipPlanId) {
-                              console.log({ value, membershipPlanId });
-                              return toast.error(
-                                "Please Select a Membership Plan first"
-                              );
-                            }
-                            form.setValue("startDate", value as Date, {
-                              shouldValidate: true,
-                            });
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Start Date"
+                  disabled={isPending}
                 />
                 {endDate && (
                   <p className="text-sm font-medium text-blue-500">
@@ -355,8 +205,8 @@ export const MemberForm = ({
                     value={field.value}
                     onChange={field.onChange}
                     disabled={isPending}
-                    isImageUploading={isImageUploading}
-                    onChangeUploadingImage={setIsImageUploading}
+                    isImageUploading={isUploadingImage}
+                    onChangeUploadingImage={setIsUploadingImage}
                   />
                 </FormControl>
                 <FormMessage />
@@ -368,7 +218,8 @@ export const MemberForm = ({
             <CostModifier value={cost} onChange={setModifiedCost} />
           )}
           <LoadingButton
-            isLoading={isPending || isImageUploading}
+            isLoading={isPending}
+            disabled={isUploadingImage}
             type="submit"
           >
             {member ? "Save" : "Create"}

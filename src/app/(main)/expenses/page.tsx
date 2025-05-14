@@ -7,6 +7,9 @@ import { SearchParamsType } from "@/types";
 import { Prisma } from "@prisma/client";
 import { columns } from "./_components/table/columns";
 import { Metadata } from "next";
+import { Suspense } from "react";
+import { PageLoader } from "@/components/loaders/page-loader";
+import Await from "@/components/await";
 
 export const generateMetadata = (): Metadata => {
   return {
@@ -27,26 +30,22 @@ const ExpensesPage = async ({
     ...(q ? { title: { contains: q } } : {}),
   };
 
-  const [expenses, expensesCount] = await Promise.all([
-    db.expense.findMany({
-      where,
-      take: VIEW_PER_PAGE,
-      skip,
-      orderBy: { createdAt: "desc" },
-    }),
-    db.expense.count({ where }),
-  ]);
+  const promise = db.expense.findMany({
+    where,
+    take: VIEW_PER_PAGE,
+    skip,
+    orderBy: { createdAt: "desc" },
+  });
 
   return (
-    <div className="space-y-3">
+    <>
       <PageHeader label="Expenses" actionUrl="/expenses/new" />
-      <DataTable
-        columns={columns}
-        data={expenses}
-        showSearchInput
-        pagesDataCount={expensesCount}
-      />
-    </div>
+      <Suspense fallback={<PageLoader />}>
+        <Await promise={promise}>
+          {(data) => <DataTable columns={columns} data={data} />}
+        </Await>
+      </Suspense>
+    </>
   );
 };
 

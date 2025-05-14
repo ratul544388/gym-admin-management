@@ -19,11 +19,11 @@ import { useLoadingStore } from "@/hooks/use-loading-store";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { useSearchParams } from "next/navigation";
 import React from "react";
+import { TableLoader } from "../loaders/table-loader";
 import { Pagination } from "../pagination";
 import { SearchInput } from "../search-input";
 import { Button } from "../ui/button";
 import { SortbyDropdownMenu } from "./sortby-dropdown-menu";
-import { Loader } from "./loader";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -58,79 +58,81 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="flex relative flex-col gap-4">
-      <div className="flex items-center gap-5 flex-wrap">
-        {showSearchInput && (
-          <div className="flex gap-3 w-full">
-            <SearchInput placeholder={searchInputPlaceholder} />
-            {orderbyFilter && <SortbyDropdownMenu />}
-          </div>
-        )}
-        {!!searchParams.size && (
-          <Button
-            onClick={() => {
-              setQueryParams({ query: {}, clearCurrentQuery: true });
-              table.setRowSelection({});
-            }}
-            variant="outline"
-          >
-            <span className="size-5 flex items-center justify-center bg-primary/90 text-white rounded-full text-xs font-medium">
-              {searchParams.size}
-            </span>
-            Reset Filers
-          </Button>
-        )}
-      </div>
-      <div className="overflow-hidden rounded-md relative border">
-        {isLoading && <Loader />}
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+    <div className="flex bg-secondary pb-5 border rounded-xl overflow-hidden relative flex-col gap-4">
+      <div className="flex p-5 flex-col gap-4">
+        <div className="flex items-center gap-5 flex-wrap">
+          {showSearchInput && (
+            <div className="flex gap-3 w-full">
+              <SearchInput placeholder={searchInputPlaceholder} />
+              {orderbyFilter && <SortbyDropdownMenu />}
+            </div>
+          )}
+          {!!searchParams.size && (
+            <Button
+              onClick={() => {
+                setQueryParams({ query: {}, clearCurrentQuery: true });
+                table.setRowSelection({});
+              }}
+              variant="outline"
+            >
+              <span className="size-5 flex items-center justify-center bg-primary/90 text-white rounded-full text-xs font-medium">
+                {searchParams.size}
+              </span>
+              Reset Filers
+            </Button>
+          )}
+        </div>
+        <div className="overflow-hidden rounded-md relative border">
+          {isLoading && <TableLoader />}
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
       {!!pagesDataCount && <Pagination dataCount={pagesDataCount} />}
     </div>

@@ -25,9 +25,9 @@ export const SidebarItems = ({ className, onClose }: SidebarItemsProps) => {
                 onClick={onClose}
                 href={href}
                 className={cn(
-                  "flex relative items-center gap-4 py-2.5 px-4 hover:bg-accent font-medium",
+                  "flex relative transition-colors text-foreground/80 items-center gap-4 py-2.5 px-4 hover:bg-gray-300/80 dark:hover:bg-accent font-medium",
                   isActive &&
-                    "bg-primary/10 hover:bg-primary/20 text-primary font-semibold"
+                    "bg-accent dark:bg-muted text-primary font-semibold"
                 )}
               >
                 <Image src={image} alt="Icon" width={20} height={20} />
@@ -35,7 +35,7 @@ export const SidebarItems = ({ className, onClose }: SidebarItemsProps) => {
                 {isActive && (
                   <motion.span
                     layoutId="activeSidebarLink"
-                    className="absolute inset-y-0 w-2 bg-blue-600 left-0 rounded-r-full"
+                    className="absolute inset-y-0 w-2 bg-primary right-0 rounded-l-full"
                   />
                 )}
               </Link>

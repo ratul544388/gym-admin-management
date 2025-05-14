@@ -1,6 +1,5 @@
 "use client";
 
-import { deleteExpenses } from "@/actions/expenses";
 import { DropDownMenu } from "@/components/dropdown-menu";
 import { useWarningModal } from "@/hooks/use-warning-modal";
 import { DropdownMenuItemType } from "@/types";
@@ -8,6 +7,7 @@ import { Expense } from "@prisma/client";
 import { Table } from "@tanstack/react-table";
 import { Edit, MoreVertical, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { deleteExpenses } from "../../actions";
 
 interface ActionCellProps {
   expense: Expense;
@@ -37,7 +37,7 @@ export const ActionCell = ({ expense, table }: ActionCellProps) => {
     {
       label: "Edit Expense",
       icon: Edit,
-      onClick: () => router.push(`/expenses/edit/${expense.id}`),
+      onClick: () => router.push(`/expenses/${expense.id}/edit`),
     },
     {
       label: "Delete Expense",

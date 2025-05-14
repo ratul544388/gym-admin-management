@@ -4,7 +4,13 @@ import { z } from "zod";
 export const MemberSchema = z.object({
   memberId: z.coerce.number().min(1),
   name: z.string().min(3),
-  phone: z.string().optional(),
+  phone: z
+    .string()
+    .optional()
+    .refine((value) => {
+      if (!value || value.trim() === "") return true;
+      return /^01\d{9}$/.test(value);
+    }, "Invalid Phone Number"),
   age: z.coerce.number().optional(),
   image: z.string().optional(),
   address: z.string().optional(),

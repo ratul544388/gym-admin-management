@@ -1,6 +1,5 @@
 "use client";
 
-import { deleteMembers } from "@/actions/members";
 import { CopyButton } from "@/components/copy-button";
 import { NotProvided } from "@/components/not-provided";
 import { TableActionHeader } from "@/components/table-action-header";
@@ -14,6 +13,7 @@ import { GenderHeader } from "./gender-header";
 import { MembershipPlanHeader } from "./membership-plan-header";
 import { StatusCell } from "./status-cell";
 import { StatusHeader } from "./status-header";
+import { deleteMembers } from "../../actions";
 
 export const columns: ColumnDef<FullMemberType>[] = [
   {

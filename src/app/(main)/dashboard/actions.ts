@@ -3,7 +3,8 @@ import { months } from "@/constants";
 import { db } from "@/lib/db";
 import { ExpenseVsRevenueChartType } from "@/types";
 
-export const getRevenueVsExpenseChartData = async (year: number = 2025) => {
+export const getRevenueVsExpenseChartData = async () => {
+  const year = new Date().getFullYear();
   const chartData: ExpenseVsRevenueChartType = [];
 
   const groupByMonth = (records: { createdAt: Date; cost: number }[]) => {

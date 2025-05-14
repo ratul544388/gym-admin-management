@@ -1,6 +1,5 @@
 "use client";
 
-import { deleteMembers } from "@/actions/members";
 import { DropDownMenu } from "@/components/dropdown-menu";
 import { today } from "@/constants";
 import { useWarningModal } from "@/hooks/use-warning-modal";
@@ -9,6 +8,7 @@ import { Table } from "@tanstack/react-table";
 import { differenceInDays } from "date-fns";
 import { Calendar, Edit, MoreVertical, Trash2, User2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { deleteMembers } from "../../actions";
 
 interface ActionCellProps {
   member: FullMemberType;
@@ -44,19 +44,19 @@ export const ActionCell = ({ member, table }: ActionCellProps) => {
     {
       label: "View Profile",
       icon: User2,
-      onClick: () => router.push(`/members/profile/${member.id}`),
+      onClick: () => router.push(`/members/${member.id}/profile`),
     },
     {
       label: "Edit Member",
       icon: Edit,
-      onClick: () => router.push(`/members/edit/${member.id}`),
+      onClick: () => router.push(`/members/${member.id}/edit`),
     },
     ...(isMembershipPlanRenewable
       ? [
           {
             icon: Calendar,
             label: "Renew Membership Plan",
-            onClick: () => router.push(`/members/renew/${member.id}`),
+            onClick: () => router.push(`/members/${member.id}/renew`),
           },
         ]
       : []),

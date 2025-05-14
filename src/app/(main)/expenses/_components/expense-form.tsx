@@ -1,6 +1,5 @@
 "use client";
 
-import { createExpense, updateExpense } from "@/actions/expenses";
 import { useFormError } from "@/hooks/use-form-error";
 import { ExpenseSchema, ExpenseValues } from "@/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,17 +9,13 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { FormCard } from "@/components/form-card";
-import { Input } from "@/components/ui/input";
+import { FormInput } from "@/components/form-input";
 import { LoadingButton } from "@/components/loading-button";
+import {
+  Form
+} from "@/components/ui/form";
+import { createExpense, updateExpense } from "../actions";
 
 interface ExpenseFormProps {
   expense?: Expense;
@@ -43,7 +38,7 @@ export const ExpenseForm = ({ expense }: ExpenseFormProps) => {
       if (expense) {
         updateExpense({
           values,
-          id: expense.id
+          id: expense.id,
         }).then(({ success, error }) => {
           if (success) {
             toast.success(success);
@@ -71,43 +66,24 @@ export const ExpenseForm = ({ expense }: ExpenseFormProps) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormCard>
-          <FormField
+          <FormInput
             control={form.control}
             name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Title</FormLabel>
-                <FormControl>
-                  <Input
-                    autoFocus={!!!expense}
-                    placeholder="Enter the title"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            autoFocus
+            disabled={isPending}
           />
-          <FormField
+          <FormInput
             control={form.control}
             name="cost"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Cost</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Exter the cost"
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            type="number"
+            disabled={isPending}
           />
-          <FormError/>
-          <LoadingButton type="submit" isLoading={isPending} className="ml-auto">
+          <FormError />
+          <LoadingButton
+            type="submit"
+            isLoading={isPending}
+            className="ml-auto"
+          >
             {expense ? "Update" : "Create"}
           </LoadingButton>
         </FormCard>

@@ -1,9 +1,10 @@
+
 "use client";
 
-import Link from "next/link";
-import { buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, PlusCircle } from "lucide-react";
+import Link from "next/link";
+import { buttonVariants } from "./ui/button";
 
 interface PageHeaderProps {
   className?: string;
@@ -21,7 +22,7 @@ export const PageHeader = ({
   backButtonUrl,
 }: PageHeaderProps) => {
   return (
-    <div className={cn("flex py-3 items-center border-b", className)}>
+    <div className={cn("flex h-[60px] border bg-secondary my-4 rounded-xl px-4 items-center ", className)}>
       {backButtonUrl && (
         <Link
           href={backButtonUrl}
@@ -43,3 +44,4 @@ export const PageHeader = ({
     </div>
   );
 };
+

@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteMembershipPlans } from "@/actions/membership-plans";
+import { deleteMembershipPlans } from "@/app/(main)/membership-plans/actions";
 import { DropDownMenu } from "@/components/dropdown-menu";
 import { useWarningModal } from "@/hooks/use-warning-modal";
 import { DropdownMenuItemType } from "@/types";
@@ -37,7 +37,7 @@ export const ActionCell = ({ membershipPlan, table }: ActionCellProps) => {
     {
       label: "Edit Membership Plan",
       icon: Edit,
-      onClick: () => router.push(`/membership-plans/edit/${membershipPlan.id}`),
+      onClick: () => router.push(`/membership-plans/${membershipPlan.id}/edit`),
     },
     {
       label: "Delete Membership Plan",

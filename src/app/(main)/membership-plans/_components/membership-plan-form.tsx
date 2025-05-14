@@ -1,9 +1,5 @@
 "use client";
 
-import {
-  createMembershipPlan,
-  updateMembershipPlan,
-} from "@/actions/membership-plans";
 import { useFormError } from "@/hooks/use-form-error";
 import { MembershipPlanSchema, MembershipPlanValues } from "@/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,16 +10,12 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { FormCard } from "@/components/form-card";
+import { FormInput } from "@/components/form-input";
 import { LoadingButton } from "@/components/loading-button";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+  Form
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { createMembershipPlan, updateMembershipPlan } from "../actions";
 
 interface MembershipPlanFormProps {
   membershipPlan?: MembershipPlan;
@@ -79,64 +71,26 @@ export const MembershipPlanForm = ({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormCard>
-          <FormField
+          <FormInput
             control={form.control}
             name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input
-                    autoFocus={!!!membershipPlan}
-                    placeholder="Name"
-                    disabled={isPending}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            disabled={isPending}
+            autoFocus
           />
-          <FormField
+          <FormInput
             control={form.control}
+            disabled={isPending}
             name="durationInMonth"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Duration in Month</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Duration In Month"
-                    disabled={isPending}
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Duration In Month"
           />
-          <FormField
+          <FormInput
             control={form.control}
             name="price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Price</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                    placeholder="Price"
-                    disabled={isPending}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            disabled={isPending}
+            type="number"
           />
           <FormError />
-          <LoadingButton type="submit" isLoading={isPending}>
+          <LoadingButton isLoading={isPending}>
             {membershipPlan ? "Update" : "Create"}
           </LoadingButton>
         </FormCard>

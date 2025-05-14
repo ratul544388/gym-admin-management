@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const NotFound = () => {
   return (
-    <div className="flex min-h-[calc(100vh_-_70px)] flex-col items-center justify-center pb-20">
+    <div className="flex min-h-screen flex-col items-center justify-center">
       <h1 className="text-8xl font-extrabold">Opps!</h1>
       <h2 className="mt-6 text-xl font-bold">404 - PAGE NOT FOUND</h2>
       <p className="mt-3 text-center text-sm text-muted-foreground">

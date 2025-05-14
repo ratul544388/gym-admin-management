@@ -1,5 +1,4 @@
 
-
 export const sidebarLinks = [
   {
     label: "Dashboard",
@@ -55,4 +54,7 @@ export const months = [
   "December",
 ] as const;
 
-export const adminEmails = ["admin@admin.com", "ratulislam544388@gmail.com"];
+export const adminEmails = [
+  "antoradria@gmail.com",
+  "ratulislam544388@gmail.com",
+];

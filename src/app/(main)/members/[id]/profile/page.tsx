@@ -55,12 +55,14 @@ const MemberProfilePage = async ({ params }: { params: ParamsType }) => {
     expire_date: formatDate(endDate),
   };
 
+  console.log(image);
+
   return (
-    <div className="space-y-3">
+    <>
       <PageHeader label="Member's Profile" backButtonUrl="/members" />
-      <div className="rounded-lg border border-dashed bg-background p-5 shadow-md">
+      <div className="border bg-secondary rounded-lg p-5 shadow-md">
         <div className="flex justify-between">
-          <div className="relative bg-accent border rounded-md overflow-hidden size-48">
+          <div className="relative bg-muted border rounded-lg overflow-hidden size-48">
             <Image
               src={image || placeholderImage}
               alt="Avatar"
@@ -69,7 +71,7 @@ const MemberProfilePage = async ({ params }: { params: ParamsType }) => {
             />
           </div>
           <Link
-            href={`/members/edit/${member.id}`}
+            href={`/members/${member.id}/edit`}
             className={buttonVariants({ variant: "outline" })}
           >
             <Edit className="size-4" />
@@ -80,7 +82,7 @@ const MemberProfilePage = async ({ params }: { params: ParamsType }) => {
           {Object.entries(data).map(([key, value]) => (
             <li
               key={key}
-              className="flex justify-between rounded-sm px-3 py-2 odd:bg-accent"
+              className="flex justify-between rounded-lg px-3 py-2 odd:bg-muted"
             >
               <p className="capitalize">{String(key).replace(/_/g, " ")}</p>
               <p
@@ -92,7 +94,7 @@ const MemberProfilePage = async ({ params }: { params: ParamsType }) => {
           ))}
         </ul>
       </div>
-    </div>
+    </>
   );
 };
 

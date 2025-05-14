@@ -19,8 +19,8 @@ export const MobileSidebar = () => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="md:hidden">
-          <Menu className="!size-6" />
+        <Button variant="outline" size="icon" className="md:hidden rounded-md">
+          <Menu className="size-4" />
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="md:hidden px-0">

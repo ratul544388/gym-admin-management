@@ -67,7 +67,7 @@ export const Pagination = ({ className, dataCount }: PaginationProps) => {
   return (
     <div
       className={cn(
-        "xs:gap-2 bg-background mx-auto flex w-fit items-center gap-1.5 rounded-full px-3 py-2 shadow-md border border-dashed",
+        "xs:gap-2 bg-muted mx-auto flex w-fit items-center gap-1.5 rounded-full px-3 py-2 shadow-md border border-dashed",
         className
       )}
     >

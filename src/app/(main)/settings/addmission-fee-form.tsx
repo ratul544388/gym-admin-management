@@ -1,11 +1,12 @@
 "use client";
 
-import { setDefaultAdmissionFee } from "@/actions/default";
-import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/loading-button";
 import { Input } from "@/components/ui/input";
 import { DEFAULT_ADMISSION_FEE } from "@/constants";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { setDefaultAdmissionFee } from "./actions";
 
 interface AddmissionFeeFormProps {
   admissionFee?: number;
@@ -14,6 +15,7 @@ interface AddmissionFeeFormProps {
 export const AddmissionFeeForm = ({
   admissionFee = DEFAULT_ADMISSION_FEE,
 }: AddmissionFeeFormProps) => {
+  const router = useRouter();
   const [value, setValue] = useState<string>(String(admissionFee));
   const [isPending, startTransition] = useTransition();
 
@@ -23,6 +25,7 @@ export const AddmissionFeeForm = ({
       setDefaultAdmissionFee(Number(value)).then(({ success, error }) => {
         if (success) {
           toast.error(success);
+          router.refresh();
         } else {
           toast.error(error);
         }
@@ -40,9 +43,9 @@ export const AddmissionFeeForm = ({
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
-      <Button disabled={isPending || !value} className="ml-4">
+      <LoadingButton size="default" disabled isLoading={isPending} className="ml-4">
         Save
-      </Button>
+      </LoadingButton>
     </form>
   );
 };

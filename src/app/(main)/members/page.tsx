@@ -1,4 +1,5 @@
 import { DataTable } from "@/components/data-table";
+import { PageLoader } from "@/components/loaders/page-loader";
 import { PageHeader } from "@/components/page-header";
 import { VIEW_PER_PAGE } from "@/constants";
 import { db } from "@/lib/db";
@@ -7,6 +8,7 @@ import { Orderby, SearchParamsType, StatusType } from "@/types";
 import { Gender, Prisma } from "@prisma/client";
 import { endOfToday, startOfToday } from "date-fns";
 import { Metadata } from "next";
+import { Fragment, Suspense } from "react";
 import { columns } from "./_components/table/columns";
 
 const getMembers = async ({
@@ -67,6 +69,21 @@ export default async function MembersPage({
 }: {
   searchParams: SearchParamsType;
 }) {
+  return (
+    <>
+      <PageHeader label="Members" actionUrl="/members/new" />
+      <Suspense fallback={<PageLoader />}>
+        <MembersDataTable searchParams={searchParams} />
+      </Suspense>
+    </>
+  );
+}
+
+const MembersDataTable = async ({
+  searchParams,
+}: {
+  searchParams: SearchParamsType;
+}) => {
   const {
     page = 1,
     q,
@@ -82,18 +99,15 @@ export default async function MembersPage({
 
   const skip = getSkip(page);
 
+  const todayStart = startOfToday();
+  const todayEnd = endOfToday();
   const where: Prisma.MemberWhereInput = {
     ...(gender
       ? {
-          ...(gender === "MALE"
-            ? {
-                gender: "MALE",
-              }
-            : {
-                gender: "FEMALE",
-              }),
+          gender: gender === "MALE" ? "MALE" : "FEMALE",
         }
       : {}),
+
     ...(q
       ? {
           OR: [
@@ -113,6 +127,7 @@ export default async function MembersPage({
           ],
         }
       : {}),
+
     ...(membershipPlan
       ? {
           membershipPlan: {
@@ -123,28 +138,31 @@ export default async function MembersPage({
           },
         }
       : {}),
-    ...(status === "PENDING"
-      ? {
-          isMembershipPlanRenewed: false,
-          startDate: {
-            gt: startOfToday(),
-          },
-        }
-      : status === "EXPIRED"
-      ? {
-          endDate: {
-            lt: endOfToday(),
-          },
-        }
-      : status === "ACTIVE"
-      ? {
-          endDate: {
-            gt: startOfToday(),
-          },
-          startDate: {
-            lt: startOfToday(),
-          },
-        }
+
+    ...(status
+      ? status === "ACTIVE"
+        ? {
+            startDate: {
+              lte: todayEnd,
+            },
+            endDate: {
+              gte: todayStart,
+            },
+          }
+        : status === "PENDING"
+        ? {
+            isMembershipPlanRenewed: false,
+            startDate: {
+              gt: todayEnd,
+            },
+          }
+        : status === "EXPIRED"
+        ? {
+            endDate: {
+              lt: todayStart,
+            },
+          }
+        : {}
       : {}),
   };
 
@@ -154,16 +172,13 @@ export default async function MembersPage({
   ]);
 
   return (
-    <div className="space-y-4">
-      <PageHeader label="Members" actionUrl="/members/new" />
-      <DataTable
-        columns={columns}
-        data={members}
-        pagesDataCount={totalMembers}
-        showSearchInput
-        searchInputPlaceholder="Search members by Name or ID"
-        orderbyFilter
-      />
-    </div>
+    <DataTable
+      columns={columns}
+      data={members}
+      pagesDataCount={totalMembers}
+      showSearchInput
+      searchInputPlaceholder="Search members by Name or ID"
+      orderbyFilter
+    />
   );
-}
+};

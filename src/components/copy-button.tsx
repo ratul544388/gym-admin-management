@@ -15,7 +15,6 @@ export const CopyButton = ({ text }: CopyButtonProps) => {
 
   const handleClick = () => {
     toast.success(`${text} copied`);
-    console.log("clicked")
     setIsCopied(true);
     navigator.clipboard.writeText(text);
     setTimeout(() => {

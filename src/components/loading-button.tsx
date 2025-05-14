@@ -1,26 +1,41 @@
 "use client";
 
-import React from "react";
-import { Button } from "./ui/button";
+import React, { forwardRef } from "react";
+import { Button, ButtonProps } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { Loader } from "lucide-react";
 
-type LoadingButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  isLoading: boolean;
-};
-
-export const LoadingButton = ({ isLoading, ...props }: LoadingButtonProps) => {
-  return (
-    <Button disabled={isLoading} className={cn("relative", props.className)}>
-      {props.children}
-      <span
+export const LoadingButton = forwardRef<
+  HTMLButtonElement,
+  ButtonProps & { isLoading: boolean }
+>(
+  (
+    { disabled, isLoading, variant = "default", size = "lg", ...props },
+    ref
+  ) => {
+    return (
+      <Button
+        ref={ref}
+        variant={variant}
+        size={size}
+        disabled={isLoading || disabled}
         className={cn(
-          "absolute items-center justify-center inset-0 hidden bg-primary",
-          isLoading && "flex"
+          "relative overflow-hidden ml-auto font-semibold w-fit",
+          props.className
         )}
       >
-        <Loader className="size-4 animate-spin" />
-      </span>
-    </Button>
-  );
-};
+        {props.children}
+        <span
+          className={cn(
+            "absolute items-center justify-center inset-0 hidden bg-primary",
+            isLoading && "flex"
+          )}
+        >
+          <Loader className="size-4 animate-spin" />
+        </span>
+      </Button>
+    );
+  }
+);
+
+LoadingButton.displayName = "Button";

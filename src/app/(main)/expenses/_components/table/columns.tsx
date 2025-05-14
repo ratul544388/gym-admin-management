@@ -1,12 +1,12 @@
 "use client";
 
-import { deleteExpenses } from "@/actions/expenses";
 import { Checkbox } from "@/components/ui/checkbox";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { Expense } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { ActionCell } from "./action-cell";
 import { TableActionHeader } from "@/components/table-action-header";
+import { deleteExpenses } from "../../actions";
 
 export const columns: ColumnDef<Expense>[] = [
   {

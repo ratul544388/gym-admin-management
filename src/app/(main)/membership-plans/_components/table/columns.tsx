@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteMembershipPlans } from "@/actions/membership-plans";
+import { deleteMembershipPlans } from "@/app/(main)/membership-plans/actions";
 import { TableActionHeader } from "@/components/table-action-header";
 import { Checkbox } from "@/components/ui/checkbox";
 import { formatPrice } from "@/lib/utils";
@@ -8,7 +8,9 @@ import { MembershipPlan } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { ActionCell } from "./action-cell";
 
-export const columns: ColumnDef<MembershipPlan>[] = [
+export const columns: ColumnDef<
+  MembershipPlan & { _count?: { members: number } }
+>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -56,6 +58,11 @@ export const columns: ColumnDef<MembershipPlan>[] = [
     accessorKey: "price",
     header: "Price",
     cell: ({ row }) => formatPrice(row.original.price),
+  },
+  {
+    accessorKey: "_count",
+    header: "Member Count",
+    cell: ({row}) => row.original._count?.members,
   },
   {
     accessorKey: "id",

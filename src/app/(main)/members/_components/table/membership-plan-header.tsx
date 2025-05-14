@@ -2,7 +2,7 @@
 
 import {
   getMembershipPlans
-} from "@/actions/membership-plans";
+} from "@/app/(main)/membership-plans/actions";
 import { DropDownMenu } from "@/components/dropdown-menu";
 import { buttonVariants } from "@/components/ui/button";
 import { useQueryParams } from "@/hooks/use-query-params";

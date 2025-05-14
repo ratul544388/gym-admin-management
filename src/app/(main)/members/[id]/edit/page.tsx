@@ -12,13 +12,14 @@ const EditMemberPage = async ({ params }: { params: ParamsType }) => {
     return <NotFound />;
   }
 
-  const member = await db.member.findUnique({
-    where: {
-      id,
-    },
-  });
-
-  const membershipPlans = await db.membershipPlan.findMany();
+  const [member, membershipPlans] = await Promise.all([
+    db.member.findUnique({
+      where: {
+        id,
+      },
+    }),
+    db.membershipPlan.findMany(),
+  ]);
 
   if (!member) {
     return <NotFound />;

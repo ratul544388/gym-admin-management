@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
@@ -34,7 +34,6 @@ export function RevenueVsExpenseChart({
 }: {
   chartData: ExpenseVsRevenueChartType;
 }) {
-
 
   return (
     <Card className="mt-8">
