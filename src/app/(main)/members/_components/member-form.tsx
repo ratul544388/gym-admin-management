@@ -136,7 +136,7 @@ export const MemberForm = ({
             name="memberId"
             label="ID"
             disabled={isPending}
-            autoFocus={!!member}
+            autoFocus={!!!member}
             type="number"
           />
           <FormInput control={form.control} name="name" disabled={isPending} />
