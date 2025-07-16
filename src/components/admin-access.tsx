@@ -14,11 +14,12 @@ export const AdminAccess = () => {
   if (isSignedIn || !isLoaded) return;
 
   return (
-    <div className="fixed bottom-0 bg-primary inset-x-0 py-5">
-      <Container className="text-white flex flex-col items-center justify-center">
+    <div className="fixed inset-x-0 bottom-0 bg-primary py-5">
+      <Container className="flex flex-col items-center justify-center text-white">
         <p className="text-center">
-          Only admin can access the dashboard! For testing purpose you can have
-          admin access with the following email and password
+          Only admin can access the dashboard! The main website is for the
+          client is deployed in another server. This is for showcase. To get
+          admin access please enter the following Email and Password
         </p>
         <Separator className="my-3" />
         <div className="flex items-center gap-1">

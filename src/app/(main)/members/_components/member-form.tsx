@@ -128,7 +128,7 @@ export const MemberForm = ({
 
 
   return (
-    <Form {...form}>
+    <Form {...form} >
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormCard>
           <FormInput

@@ -1,25 +1,28 @@
 "use client";
 
-import { CountUp } from "@/components/count-up";
-
-// import { Button } from "@/components/ui/button";
-// import { useTransition } from "react";
-// import { updateAllMembers } from "./actions";
-
+import { useState } from "react";
+import { SelectOptions, SelectValue, TestSelect } from "./test-select";
 
 const Page = () => {
-  // const [isPending, startTransition] = useTransition();
-  // const handleClick = () => {
-  //   startTransition(() => {
-  //     updateAllMembers();
-  //   });
-  // };
+  const [value, setValue] = useState<SelectValue | undefined>([]);
+  const selectOptions: SelectOptions = [
+    "Apple",
+    "Banana",
+    "Coconut",
+    "Date",
+    "Eggplant",
+  ];
+
   return (
-    <div className="h-screen flex items-center justify-center">
-      {/* <Button disabled={isPending} onClick={handleClick}>
-        Click
-      </Button> */}
-      <CountUp value="5345.33"/>
+    <div className="flex h-screen flex-col items-center justify-center gap-5">
+      <TestSelect
+        options={selectOptions}
+        value={value}
+        onChange={setValue}
+        placeholder="Select a Fruit"
+        className="w-[260px]"
+        deselect
+      />
     </div>
   );
 };
