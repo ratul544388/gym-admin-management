@@ -27,15 +27,15 @@ export const ImageUpload = ({
   const [isPending, startTransition] = useTransition();
 
   const onSelectFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const originalFile = e.target.files?.[0];
-    if (!originalFile) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     onChangeUploadingImage(true);
-
-    const webpFile = await convertImageToWebp(originalFile);
-
-    const previewUrl = URL.createObjectURL(webpFile);
+    const previewUrl = URL.createObjectURL(file);
     setPreviewImage(previewUrl);
+
+    const webpFile = await convertImageToWebp(file);
+
 
     startTransition(async () => {
       try {

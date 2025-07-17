@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
       dynamic: 30,
     },
     serverActions: {
-      bodySizeLimit: "5mb"
+      bodySizeLimit: "2mb"
     }
   },
   images: {
