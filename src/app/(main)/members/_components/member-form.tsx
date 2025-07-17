@@ -205,7 +205,6 @@ export const MemberForm = ({
                     value={field.value}
                     onChange={field.onChange}
                     disabled={isPending}
-                    isImageUploading={isUploadingImage}
                     onChangeUploadingImage={setIsUploadingImage}
                   />
                 </FormControl>
