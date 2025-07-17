@@ -3,7 +3,7 @@
 import { imageUpload } from "@/actions";
 import { convertImageToWebp } from "@/lib/convert-image-to-webp";
 import { cn } from "@/lib/utils";
-import { ImagePlus, X } from "lucide-react";
+import { ImagePlus, Loader, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -27,18 +27,16 @@ export const ImageUpload = ({
   const [isPending, startTransition] = useTransition();
 
   const onSelectFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    onChangeUploadingImage(true);
-    const previewUrl = URL.createObjectURL(file);
-    setPreviewImage(previewUrl);
-
-    const webpFile = await convertImageToWebp(file);
-
-
     startTransition(async () => {
       try {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        onChangeUploadingImage(true);
+        const previewUrl = URL.createObjectURL(file);
+        setPreviewImage(previewUrl);
+
+        const webpFile = await convertImageToWebp(file);
         const { secure_url } = await imageUpload(webpFile);
         onChange(secure_url);
       } catch (err) {
@@ -56,7 +54,7 @@ export const ImageUpload = ({
       onClick={() => inputRef.current?.click()}
       className={cn(
         "group relative flex size-28 items-center justify-center rounded-md border-2 border-dashed bg-muted",
-        disabled && "pointer-events-none opacity-60",
+        (disabled || isPending) && "pointer-events-none opacity-60",
       )}
     >
       <input
@@ -73,12 +71,12 @@ export const ImageUpload = ({
           width={112}
           height={112}
           className={cn(
-            "absolute left-0 top-0 size-full object-cover opacity-80",
+            "absolute left-0 top-0 size-full bg-accent object-cover opacity-80",
             isPending && "animate-pulse",
           )}
         />
       )}
-      {!previewImage && (
+      {!previewImage && !isPending && (
         <span className="group inline-block rounded-full bg-accent/70 p-3 transition-all group-hover:bg-accent">
           <ImagePlus className="size-4" />
         </span>
@@ -97,6 +95,7 @@ export const ImageUpload = ({
           <X className="size-4" />
         </Button>
       )}
+      {isPending && <Loader className="size-4 animate-spin" />}
     </div>
   );
 };
