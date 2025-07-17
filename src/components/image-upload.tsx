@@ -1,19 +1,18 @@
 "use client";
 
 import { imageUpload } from "@/actions";
+import { convertImageToWebp } from "@/lib/convert-image-to-webp";
 import { cn } from "@/lib/utils";
-import { ImagePlus } from "lucide-react";
+import { ImagePlus, X } from "lucide-react";
 import Image from "next/image";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
-import { Label } from "./ui/label";
 
 interface ImageUploadProps {
   onChange: (value: string) => void;
   disabled?: boolean;
   value?: string;
-  isImageUploading: boolean;
   onChangeUploadingImage: (value: boolean) => void;
 }
 
@@ -21,41 +20,50 @@ export const ImageUpload = ({
   onChange,
   disabled,
   value,
-  isImageUploading,
   onChangeUploadingImage,
 }: ImageUploadProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [previewImage, setPreviewImage] = useState(value);
   const [isPending, startTransition] = useTransition();
-  const onSelectFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChangeUploadingImage(true);
-    const file = e.target.files?.[0];
-    if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result;
-      setPreviewImage(result as string);
-    };
-    reader.readAsDataURL(file);
+  const onSelectFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const originalFile = e.target.files?.[0];
+    if (!originalFile) return;
+
+    onChangeUploadingImage(true);
+
+    const webpFile = await convertImageToWebp(originalFile);
+
+    const previewUrl = URL.createObjectURL(webpFile);
+    setPreviewImage(previewUrl);
 
     startTransition(async () => {
       try {
-        const { secure_url } = await imageUpload(file);
+        const { secure_url } = await imageUpload(webpFile);
         onChange(secure_url);
       } catch (err) {
-        console.error("Upload failed:", err);
-        toast.error("Upload failed");
+        console.error("Upload or conversion failed:", err);
+        toast.error("Image upload failed");
+      } finally {
+        onChangeUploadingImage(false);
       }
     });
   };
 
   return (
-    <div className="relative size-28 rounded-md border-2 border-dashed bg-muted">
+    <div
+      role="button"
+      onClick={() => inputRef.current?.click()}
+      className={cn(
+        "group relative flex size-28 items-center justify-center rounded-md border-2 border-dashed bg-muted",
+        disabled && "pointer-events-none opacity-60",
+      )}
+    >
       <input
-        id="file"
+        ref={inputRef}
         type="file"
         accept="image/*"
-        className="pointer-events-none size-0 opacity-0"
+        className="pointer-events-none absolute opacity-0"
         onChange={onSelectFile}
       />
       {previewImage && (
@@ -70,17 +78,25 @@ export const ImageUpload = ({
           )}
         />
       )}
-      <Button
-        disabled={disabled || isImageUploading}
-        size="icon"
-        variant="outline"
-        type="button"
-        className="abs-center bg-accent hover:bg-gray-300 dark:hover:bg-gray-700"
-      >
-        <Label htmlFor="file" className="cursor-pointer">
-          <ImagePlus className="size-6" />
-        </Label>
-      </Button>
+      {!previewImage && (
+        <span className="group inline-block rounded-full bg-accent/70 p-3 transition-all group-hover:bg-accent">
+          <ImagePlus className="size-4" />
+        </span>
+      )}
+      {value && (
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            setPreviewImage("");
+            onChange("");
+          }}
+          className="absolute right-0 top-0 size-7 rounded-full"
+          variant="outline"
+          size="icon"
+        >
+          <X className="size-4" />
+        </Button>
+      )}
     </div>
   );
 };
