@@ -1,13 +1,13 @@
 "use client";
 
 import { imageUpload } from "@/actions";
-import { convertImageToWebp } from "@/lib/convert-image-to-webp";
 import { cn } from "@/lib/utils";
 import { ImagePlus, Loader, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
+import { convertImageToWebp } from "@/lib/convert-image-to-webp";
 
 interface ImageUploadProps {
   onChange: (value: string) => void;
@@ -27,12 +27,12 @@ export const ImageUpload = ({
   const [isPending, startTransition] = useTransition();
 
   const onSelectFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChangeUploadingImage(true);
     startTransition(async () => {
       try {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        onChangeUploadingImage(true);
         const previewUrl = URL.createObjectURL(file);
         setPreviewImage(previewUrl);
 

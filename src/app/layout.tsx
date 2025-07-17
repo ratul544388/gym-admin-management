@@ -34,7 +34,7 @@ export default function RootLayout({
     <ClerkProvider afterSignOutUrl="/sign-in">
       <html lang="en" suppressHydrationWarning>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-secondary`}
         >
           <ThemeProvider
             attribute="class"

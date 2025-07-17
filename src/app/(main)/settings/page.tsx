@@ -18,7 +18,7 @@ const SettingsPage = async () => {
     <>
       <PageHeader label="Settings" />
       <Suspense fallback={<PageLoader />}>
-        <div className="bg-secondary border rounded-xl p-5">
+        <div className="bg-background shadow rounded-xl p-5">
           <Await promise={promise}>
             {(data) => <AddmissionFeeForm admissionFee={data?.admissionFee} />}
           </Await>

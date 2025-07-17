@@ -36,7 +36,7 @@ export function RevenueVsExpenseChart({
 }) {
 
   return (
-    <Card className="mt-8">
+    <Card className="mt-8 border-none dark:shadow-accent">
       <CardHeader>
         <CardTitle>Bar Chart - Revenue Vs. Expense</CardTitle>
         <CardDescription>January - December</CardDescription>

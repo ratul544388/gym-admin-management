@@ -12,7 +12,7 @@ export const FormCard = ({ children, className }: FormWrapperProps) => {
   return (
     <div
       className={cn(
-        "flex flex-col bg-secondary gap-8 rounded-lg border p-6 shadow-md",
+        "flex flex-col bg-background gap-8 rounded-lg p-6 shadow-md dark:shadow-accent",
         className,
       )}
     >

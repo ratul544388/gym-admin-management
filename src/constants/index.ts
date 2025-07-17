@@ -1,33 +1,37 @@
+import { MdDashboard, MdSettings } from "react-icons/md";
+import { FaUsers, FaMoneyBillWave } from "react-icons/fa";
+import { IoCardOutline } from "react-icons/io5";
 
 export const sidebarLinks = [
   {
     label: "Dashboard",
     href: "/dashboard",
-    image: "/nav-icon/dashboard.png",
+    icon: MdDashboard,
+    order: 3,
   },
   {
     label: "Members",
     href: "/members",
-    image: "/nav-icon/members.png",
+    icon: FaUsers,
+    order: 2,
   },
   {
     label: "Membership Plans",
     href: "/membership-plans",
-    image: "/nav-icon/membership-plans.png",
+    icon: IoCardOutline,
+    order: 1,
   },
   {
     label: "Expenses",
     href: "/expenses",
-    image: "/nav-icon/expenses.png",
+    icon: FaMoneyBillWave,
+    order: 4,
   },
-  // {
-  //   label: "Lockers",
-  //   href: "/lockers",
-  // },
   {
     label: "Settings",
     href: "/settings",
-    image: "/nav-icon/settings.png",
+    icon: MdSettings,
+    order: 5,
   },
 ] as const;
 

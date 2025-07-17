@@ -58,7 +58,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="flex bg-secondary pb-5 border rounded-xl overflow-hidden relative flex-col gap-4">
+    <div className="flex bg-background pb-5 dark:shadow-accent shadow rounded-xl overflow-hidden relative flex-col gap-4">
       <div className="flex p-5 flex-col gap-4">
         <div className="flex items-center gap-5 flex-wrap">
           {showSearchInput && (

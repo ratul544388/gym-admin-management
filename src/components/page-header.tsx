@@ -22,7 +22,7 @@ export const PageHeader = ({
   backButtonUrl,
 }: PageHeaderProps) => {
   return (
-    <div className={cn("flex h-[60px] border bg-secondary my-4 rounded-xl px-4 items-center ", className)}>
+    <div className={cn("flex h-[60px] shadow dark:shadow-accent bg-background my-4 rounded-xl px-4 items-center ", className)}>
       {backButtonUrl && (
         <Link
           href={backButtonUrl}

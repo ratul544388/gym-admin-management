@@ -157,14 +157,14 @@ export const DashboardElements = async () => {
   return (
     <>
       <ul className="space-y-8">
-        <li className="p-5 bg-card shadow rounded-lg dark:border">
+        <li className="p-5 bg-background shadow rounded-lg dark:shadow-accent">
           <h2 className="font-semibold text-xl">Members</h2>
           <ul className="mt-3 grid xs:grid-cols-2 gap-6 lg:grid-cols-3">
             {membersData.map(({ label, value }) => (
               <li
                 key={label}
                 className={cn(
-                  "rounded-lg border bg-muted/60 flex flex-col gap-2 p-5 shadow"
+                  "rounded-lg dark:shadow-accent-md flex flex-col gap-2 p-5 shadow"
                 )}
               >
                 <h3 className="text-lg font-semibold">{label}</h3>
@@ -173,14 +173,14 @@ export const DashboardElements = async () => {
             ))}
           </ul>
         </li>
-        <li className="p-5 bg-card shadow rounded-lg dark:border">
+        <li className="p-5 bg-background shadow rounded-lg dark:shadow-accent">
           <h2 className="font-semibold text-xl">Revenues</h2>
           <ul className="mt-3 grid xs:grid-cols-2 gap-6 lg:grid-cols-3">
             {revenuesData.map(({ label, value }) => (
               <li
                 key={label}
                 className={cn(
-                  "rounded-lg border bg-muted/60 flex flex-col gap-2 p-5 shadow"
+                  "rounded-lg dark:shadow-accent-md flex flex-col gap-2 p-5 shadow"
                 )}
               >
                 <h3 className="text-lg font-semibold">{label}</h3>
@@ -189,14 +189,14 @@ export const DashboardElements = async () => {
             ))}
           </ul>
         </li>
-        <li className="p-5 bg-card shadow rounded-lg dark:border">
+        <li className="p-5 bg-background shadow rounded-lg dark:shadow-accent">
           <h2 className="font-semibold text-xl">Expenses</h2>
           <ul className="mt-3 grid xs:grid-cols-2 gap-6 lg:grid-cols-3">
             {expensesData.map(({ label, value }) => (
               <li
                 key={label}
                 className={cn(
-                  "rounded-lg border bg-muted/60 flex flex-col gap-2 p-5 shadow"
+                  "rounded-lg dark:shadow-accent-md flex flex-col gap-2 p-5 shadow"
                 )}
               >
                 <h3 className="text-lg font-semibold">{label}</h3>
