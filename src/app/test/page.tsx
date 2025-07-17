@@ -1,30 +1,9 @@
-"use client";
 
-import { useState } from "react";
-import { SelectOptions, SelectValue, TestSelect } from "./test-select";
-
-const Page = () => {
-  const [value, setValue] = useState<SelectValue | undefined>([]);
-  const selectOptions: SelectOptions = [
-    "Apple",
-    "Banana",
-    "Coconut",
-    "Date",
-    "Eggplant",
-  ];
-
+const Test = () => {
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-5">
-      <TestSelect
-        options={selectOptions}
-        value={value}
-        onChange={setValue}
-        placeholder="Select a Fruit"
-        className="w-[260px]"
-        deselect
-      />
+    <div>
     </div>
-  );
-};
+  )
+}
 
-export default Page;
+export default Test

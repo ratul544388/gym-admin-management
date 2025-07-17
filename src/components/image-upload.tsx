@@ -1,12 +1,10 @@
 "use client";
 
+import { imageUpload } from "@/actions";
 import { cn } from "@/lib/utils";
-import axios from "axios";
-import { ImagePlus, X } from "lucide-react";
+import { ImagePlus } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
@@ -27,7 +25,7 @@ export const ImageUpload = ({
   onChangeUploadingImage,
 }: ImageUploadProps) => {
   const [previewImage, setPreviewImage] = useState(value);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isPending, startTransition] = useTransition();
   const onSelectFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     onChangeUploadingImage(true);
     const file = e.target.files?.[0];
@@ -40,26 +38,15 @@ export const ImageUpload = ({
     };
     reader.readAsDataURL(file);
 
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "gym-admin-management");
-      const url = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`;
-      const response = await axios.post(url, formData, {
-        onUploadProgress: ({ total, loaded }) => {
-          if (total) {
-            setUploadProgress((loaded / total) * 100);
-          }
-        },
-      });
-      setUploadProgress(0);
-      onChange(response.data.secure_url);
-    } catch (error) {
-      toast.error("Error while uploading image");
-      console.log(error);
-    } finally {
-      onChangeUploadingImage(false);
-    }
+    startTransition(async () => {
+      try {
+        const { secure_url } = await imageUpload(file);
+        onChange(secure_url);
+      } catch (err) {
+        console.error("Upload failed:", err);
+        toast.error("Upload failed");
+      }
+    });
   };
 
   return (
@@ -78,8 +65,8 @@ export const ImageUpload = ({
           width={112}
           height={112}
           className={cn(
-            "pointer-events-none absolute left-0 top-0 size-full object-cover opacity-80",
-            uploadProgress && "opacity-30",
+            "absolute left-0 top-0 size-full object-cover opacity-80",
+            isPending && "animate-pulse",
           )}
         />
       )}
@@ -94,30 +81,6 @@ export const ImageUpload = ({
           <ImagePlus className="size-6" />
         </Label>
       </Button>
-      {previewImage && !isImageUploading && (
-        <Button
-          type="button"
-          onClick={() => {
-            onChange("");
-            setPreviewImage("");
-          }}
-          variant="destructive"
-          disabled={disabled}
-          className="absolute right-0 top-0 size-6"
-          size="icon"
-        >
-          <X className="size-4" />
-        </Button>
-      )}
-      {!!uploadProgress && (
-        <CircularProgressbar
-          value={uploadProgress}
-          className="absolute top-1/2 size-12 -translate-y-1/2"
-          styles={buildStyles({
-            pathColor: "hsl(var(--primary))",
-          })}
-        />
-      )}
     </div>
   );
 };
