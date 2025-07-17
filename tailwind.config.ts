@@ -9,6 +9,13 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        xs: "500px",
+      },
+      boxShadow: {
+        accent: "0 0px 10px hsl(var(--accent) / 0.3)",
+        "accent-md": "0 0 15px hsl(var(--accent))",
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
