@@ -7,7 +7,7 @@ A fully secure admin dashboard for managing gym memberships, allowing admins to 
 
 ## 🖥️ Live Demo
 
-- [https://gym-admin-management.vercel.app](https://gym-admin-management.vercel.app)
+- [Live Demo](https://gym-admin-management.vercel.app)
 
 ## 🚀 Features
 
