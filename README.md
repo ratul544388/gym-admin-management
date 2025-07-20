@@ -1,83 +1,123 @@
-Gym Admin Management 2
-Project Overview
-This is a modern gym admin management system that allows admins to fully control member management. Admins can easily add, update, delete, and renew members. It supports creating and managing multiple membership plans. The system also allows recording expenses and visualizing expense vs. revenue through charts. Team management and visitor tracking features provide full control over the website’s operations.
+```markdown
+# Gym Admin Management
 
-Screenshot
-(Add a clear and appealing screenshot of your project here)
+A fully secure admin dashboard for managing gym memberships, allowing admins to enroll, renew, update, and delete members with multiple membership plans. The dashboard provides detailed insights with revenue vs. expense graphs and membership statistics filtered by status.
 
-Main Technologies
-Next.js (v15.1.7)
+> **Note:** This is a secure admin-only project. The live demo allows login using a provided admin username and password for demo purposes.
 
-React (v19.0.0)
+## 🖥️ Live Demo
 
-TypeScript
+- [https://gym-admin-management.vercel.app](https://gym-admin-management.vercel.app)
 
-Tailwind CSS
+## 🚀 Features
 
-Prisma (ORM)
+- Secure admin login and protected routes
+- Enroll new members with multi-tier membership plans
+- Renew memberships with expiration tracking
+- View members filtered by active, pending, or expired status
+- Update and delete member records
+- Dashboard with key metrics: revenue, expenses, new joins, renewals
+- Interactive revenue vs. expense graph for data visualization
+- Responsive design with modern UI components
 
-MongoDB (mongoose)
+## 🛠️ Tech Stack
 
-React Query & React Table
+- Next.js (React framework with Turbopack)
+- Prisma ORM
+- MongoDB
+- Clerk.js for authentication and authorization
+- Tailwind CSS with animations
+- React Hook Form + Zod for forms and validation
+- Radix UI components
+- Recharts for charts and graphs
+- Zustand for state management
+- Cloudinary for media uploads
+- Axios for HTTP requests
 
-Clerk.js (Authentication)
+## 📁 Project Structure
 
-Recharts (Data visualization)
+```
 
-Key Features
-Add, delete, update, and renew members
+gym-admin-management/
+├── pages/           # Next.js pages
+├── prisma/          # Prisma schema and migrations
+├── public/          # Static assets
+├── components/      # React UI components
+└── styles/          # Tailwind CSS styles
 
-Create and manage membership plans
+````
 
-Add expenses and visualize expense vs. revenue charts
+## 🧑‍💻 Getting Started (Local Setup)
 
-Manage teams and track visitors
+### 1. Clone the Repository
 
-User-friendly and responsive admin dashboard
+```bash
+git clone https://github.com/ratul544388/gym-admin-management.git
+cd gym-admin-management
+````
 
-Secure authentication with Clerk.js
+### 2. Install Dependencies
 
-Real-time data fetching and state management with React Query
-
-Dependencies
-This project uses many packages including but not limited to:
-
-@clerk/nextjs, @prisma/client, mongoose, react-query, react-table
-
-axios, framer-motion, recharts, react-hook-form, zod, zustand
-
-tailwindcss, eslint, prettier, typescript
-
-For the full list, see the package.json dependencies section.
-
-Getting Started - How to Run Locally
-Clone the repository
-
-bash
-Copy
-Edit
-git clone <repository-url>
-cd gym-admin-management-2
-Install dependencies
-
-bash
-Copy
-Edit
+```bash
 npm install
-Generate Prisma client
+```
 
-bash
-Copy
-Edit
-npm run postinstall
-Run the development server
+### 3. Setup Environment Variables
 
-bash
-Copy
-Edit
+Create a `.env` file in the root directory and add the following variables:
+
+```
+DATABASE_URL=your_mongodb_connection_string
+NEXT_PUBLIC_CLERK_FRONTEND_API=your_clerk_frontend_api
+CLERK_API_KEY=your_clerk_api_key
+CLERK_API_SECRET=your_clerk_api_secret
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+```
+
+### 4. Prisma Setup
+
+Generate Prisma client and run migrations:
+
+```bash
+npx prisma generate
+npx prisma migrate dev --name init
+```
+
+### 5. Run Development Server
+
+```bash
 npm run dev
-Open http://localhost:3000 to view it in your browser.
+```
 
-Live Demo
-Check out the live project here:
-https://gym-admin-management.vercel.app
+Open [http://localhost:3000](http://localhost:3000) to view the app.
+
+### 6. Demo Admin Login
+
+Use the provided admin credentials on the login page to access full dashboard functionality.
+
+## ⚙️ Deployment
+
+* Deployed on Vercel with serverless functions for API routes
+* Uses Clerk for secure authentication management
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+### 👤 Author
+
+**Ratul Hossain**
+Full-Stack Web Developer
+📍 Dhaka 1310, Bangladesh
+📧 [ratul.hossain.dev@gmail.com](mailto:ratul.hossain.dev@gmail.com)
+📞 +8801815555105
+
+---
+
+> ⭐ If you find this project useful, please consider giving it a star on GitHub!
+
+```
